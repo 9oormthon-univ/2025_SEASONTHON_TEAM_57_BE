@@ -2,7 +2,7 @@ name: CI/CD to EC2
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "1/deploy/cicd-setup" ]
   workflow_dispatch: {}
 
 jobs:
