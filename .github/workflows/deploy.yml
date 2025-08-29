@@ -41,7 +41,7 @@ jobs:
           JAR_PATH=$(ls -t build/libs/*.jar | head -n 1)
           echo "jar=$JAR_PATH" >> $GITHUB_OUTPUT
 
-      # JAR 파일을 EC2로 복사 (releases 폴더에 쌓아두고 최신으로 링크)
+      # JAR 파일을 EC2로 복사 (releases 폴더에 쌓아두고 최신으로 링크 )
       - name: Upload JAR to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
