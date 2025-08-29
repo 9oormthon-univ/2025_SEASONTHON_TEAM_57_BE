@@ -1,0 +1,68 @@
+name: CI/CD to EC2
+
+on:
+  push:
+    branches: [ "dev" ]
+  workflow_dispatch: {}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # ---- Gradle 빌드 ----
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew
+          ./gradlew clean bootJar -x test
+
+      - name: Find built JAR
+        id: jar
+        run: |
+          JAR_PATH=$(ls -t build/libs/*.jar | head -n 1)
+          echo "jar=$JAR_PATH" >> $GITHUB_OUTPUT
+
+      # JAR 파일을 EC2로 복사 (releases 폴더에 쌓아두고 최신으로 링크)
+      - name: Upload JAR to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "${{ steps.jar.outputs.jar }}"
+          target: "/home/ubuntu/app/releases/"
+
+      # 원격에서 심볼릭 링크 갱신 → 서비스 재시작
+      - name: Restart service on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            LATEST_JAR=$(ls -t /home/ubuntu/app/releases/*.jar | head -n 1)
+            ln -sfn "$LATEST_JAR" /home/ubuntu/app/app.jar
+            sudo systemctl daemon-reload
+            sudo systemctl restart onda
+            sleep 2
+            systemctl --no-pager -l status onda || true
