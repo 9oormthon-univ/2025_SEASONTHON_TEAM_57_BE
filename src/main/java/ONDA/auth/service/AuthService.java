@@ -14,7 +14,6 @@ import ONDA.global.exception.ErrorCode;
 import ONDA.global.response.ApiResponse;
 import ONDA.global.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AuthService {
 
     private final KakaoOAuthClient kakaoOAuthClient;
@@ -31,10 +29,10 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
 
-    @Value("${jwt.refresh-token-validity}")
+    @Value("${jwt.access-exp-seconds}")
     private Long REFRESH_TOKEN_EXPIRE_TIME;
 
-    @Value("${jwt.access-token-validity}")
+    @Value("${jwt.refresh-exp-seconds}")
     private Long ACCESS_TOKEN_EXPIRE_TIME;
 
 
