@@ -38,6 +38,7 @@ public class SecurityConfig {
     SecurityFilterChain publicChain(HttpSecurity http) throws Exception {
         http.securityMatcher(
                 "/api/v1/test/**",
+                "/api/v1/auth/**",
                 "/swagger-ui/**",
                 "/v3/api-docs/**"
         );

@@ -5,3 +5,6 @@ spring:
 app:
   cors:
     allowed-origins: "https://2025-seasonthon-team-57-fe.vercel.app"
+
+kakao:
+  client_id: ${KAKAO_CLIENT_ID}
