@@ -1,12 +1,15 @@
 package ONDA.auth.infra.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import ONDA.auth.infra.redis.RedisService;
+import ONDA.domain.member.entity.Role;
+import ONDA.global.exception.ErrorCode;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.UUID;
@@ -16,74 +19,68 @@ public class JwtProvider {
 
     private final Key key;
 
+    private final RedisService redisService;
+
+
     @Value("${jwt.access-exp-seconds}")
     private long ACCESS_TOKEN_EXPIRE_TIME;
 
     @Value("${jwt.refresh-exp-seconds}")
     private long REFRESH_TOKEN_EXPIRE_TIME;
 
-    public JwtProvider(@Value("${jwt.secret}") String secret) {
+    public JwtProvider(@Value("${jwt.secret}") String secret, RedisService redisService) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.redisService = redisService;
     }
 
-    public String createAccessToken(Long memberId) {
-        return createToken(memberId, "access", ACCESS_TOKEN_EXPIRE_TIME);
+    public String generateAccessToken(Long userId, Role roles) {
+        return buildToken(userId, TokenType.ACCESS, roles, ACCESS_TOKEN_EXPIRE_TIME, true);
     }
 
-    public String createRefreshToken(Long memberId) {
-        return createToken(memberId, "refresh", REFRESH_TOKEN_EXPIRE_TIME);
+    public String generateRefreshToken(Long userId) {
+        return buildToken(userId, TokenType.REFRESH, null, REFRESH_TOKEN_EXPIRE_TIME, false);
     }
 
-    private String createToken(Long memberId, String type, long expireTime) {
+    private String buildToken(Long memberId, TokenType type, Role roles, long expireTime, boolean includeRoles) {
 
-        return Jwts.builder()
-                .setSubject(type)
+        JwtBuilder builder = Jwts.builder()
+                .setSubject(memberId.toString())
                 .setId(UUID.randomUUID().toString())
-                .claim("memberId", memberId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expireTime))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+                .claim("type", type.name().toLowerCase());
+
+        if (includeRoles && roles != null) builder.claim("roles", roles);
+
+        return builder.signWith(key, SignatureAlgorithm.HS256).compact();
     }
 
-    public Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
+    public TokenClaims parseAndValidate(String token, String expectedType) throws AuthenticationException {
+        Claims c = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new CustomException(AuthErrorCode.TOKEN_EXPIRED);
-        } catch (io.jsonwebtoken.MalformedJwtException e) {
-            throw new CustomException(AuthErrorCode.MALFORMED_TOKEN);
-        }catch (Exception e) {
-            throw new CustomException(AuthErrorCode.INVALID_TOKEN);
+
+        // type 일치 여부
+        String type = String.valueOf(c.get("type"));
+        if (expectedType != null && (!expectedType.equalsIgnoreCase(type))) {
+            //throw new ErrorCode.JwtAuthException(ErrorCode.ACCESS_DENIED);
         }
-    }
 
-    public long getRemainingMillis(Claims claims) {
-        Date expiration = claims.getExpiration(); // 만료 시간
-        long now = System.currentTimeMillis();    // 현재 시간
+        String jti = c.getId();
 
-        return Math.max(expiration.getTime() - now, 0);
-    }
+        // 블랙리스트 여부
+        if (redisService.exists("bl:access:" + jti)) {
+            //throw new CustomException(AuthErrorCode.TOKEN_BLACKLISTED);
+        }
 
-    public String resolveToken(HttpServletRequest request) {
-        String bearer = request.getHeader("Authorization");
-        return (bearer != null && bearer.startsWith("Bearer ")) ? bearer.substring(7) : null;
-    }
+        Long userId = Long.valueOf(c.getSubject());
+        String roles = String.valueOf(c.get("roles"));
 
-    public String resolveToken(String header) {
-        return (header != null && header.startsWith("Bearer ")) ? header.substring(7) : null;
+
+        return TokenClaims.of(userId, roles, type, jti);
     }
 }
 
