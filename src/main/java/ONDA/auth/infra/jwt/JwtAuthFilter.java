@@ -7,6 +7,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -32,13 +35,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
-
-        return m.match("/swagger-ui/**", uri)
-                || m.match("/v3/api-docs/**", uri);
+        System.out.println("======================================================");
+        //인증 필요한거 추가
+        return false;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException {
+        System.out.println("======================================================");
 
         String token = resolveToken(request);
 
@@ -72,5 +76,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         return new UsernamePasswordAuthenticationToken(
                 claims.getUserId(), null, authorities
         );
+    }
+
+    @Configuration
+    public static class FilterConfig {
+        @Bean
+        public FilterRegistrationBean<JwtAuthFilter> jwtAuthFilterRegistration(JwtAuthFilter jwtAuthFilter) {
+            FilterRegistrationBean<JwtAuthFilter> registration = new FilterRegistrationBean<>(jwtAuthFilter);
+            registration.setEnabled(false); //필터 활성화
+            return registration;
+        }
     }
 }

@@ -1,7 +1,6 @@
 package ONDA.global.config;
 
 import ONDA.auth.infra.jwt.JwtAuthFilter;
-import ONDA.auth.infra.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -55,8 +54,7 @@ public class SecurityConfig {
     @Order(2) //authenticated
     SecurityFilterChain protectedChain(HttpSecurity http, AuthenticationEntryPoint entryPoint,
                                        AccessDeniedHandler deniedHandler) throws Exception {
-        http.securityMatcher("/api/**");
-
+        http.securityMatcher("/**");
         http
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
