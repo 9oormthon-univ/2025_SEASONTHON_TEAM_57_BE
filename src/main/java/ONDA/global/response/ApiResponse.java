@@ -9,23 +9,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 public class ApiResponse<T> {
-    private int status;
+    private boolean success;
     private String code;
     private String message;
     private T data;
 
-    public ApiResponse(int status, String code, String message, T data) {
-        this.status = status;
+    public ApiResponse(boolean success, String code, String message, T data) {
+        this.success = success;
         this.code = code;
         this.message = message;
         this.data = data;
     }
 
     public static <T> ApiResponse<T> success(ResponseCode rc, T data) {
-        return new ApiResponse<>(rc.getStatus(), rc.getCode(), rc.getMessage(), data);
+        return new ApiResponse<>(true, rc.getCode(), rc.getMessage(), data);
     }
 
     public static ApiResponse<Void> error(ErrorCode ec) {
-        return new ApiResponse<>(ec.getStatus(), ec.getCode(), ec.getMessage(), null);
+        return new ApiResponse<>(false, ec.getCode(), ec.getMessage(), null);
     }
 }

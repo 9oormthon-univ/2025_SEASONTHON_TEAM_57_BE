@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleBusiness(BusinessException e) {
         ErrorCode ec = e.getErrorCode();
         return ResponseEntity.
-                status(ec.getStatus())
+                status(400)
                 .body(ApiResponse.error(ec));
     }
 
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
         ErrorCode ec = ErrorCode.BAD_REQUEST;
 
         return ResponseEntity.
-                status(ec.getStatus())
+                status(400)
                 .body(ApiResponse.error(ec));
     }
 }
