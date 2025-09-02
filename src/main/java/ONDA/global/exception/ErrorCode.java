@@ -14,10 +14,13 @@ public enum ErrorCode {
     INVALID_TOKEN(401, "AUTH001", "유효하지 않은 토큰"),
     EXPIRED_TOKEN(401, "AUTH002", "만료된 토큰"),
     ACCESS_DENIED(403, "AUTH003", "접근 권한이 없음"),
+    MISSING_TOKEN(401, "AUTH004", "토큰이 없음"),
     SIGNUP_SESSION_EXPIRED(401, "AUTH004", "회원가입 링크 만료"),
     KAKAO_INVALID_TOKEN(401, "OAUTH_KAKAO_400", "인가 코드 오류/만료"),
-    KAKAO_INTERNAL_ERROR(500, "OAUTH_KAKAO_500", "카카오 서버 오류");
+    KAKAO_INTERNAL_ERROR(500, "OAUTH_KAKAO_500", "카카오 서버 오류"),
 
+    //Validation
+    INVALID_INPUT_VALUE(400,"V001","요청 값 검증에 실패");
 
     //도메인 에러 코드 작성
 

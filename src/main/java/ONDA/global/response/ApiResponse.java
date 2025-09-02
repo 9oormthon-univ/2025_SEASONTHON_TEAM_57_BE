@@ -14,7 +14,7 @@ public class ApiResponse<T> {
     private String message;
     private T data;
 
-    private ApiResponse(int status, String code, String message, T data) {
+    public ApiResponse(int status, String code, String message, T data) {
         this.status = status;
         this.code = code;
         this.message = message;
