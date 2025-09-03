@@ -63,6 +63,7 @@ public class AuthService {
         } else { //신규 회원 (Redis로 임시 세션 생성)
             String linkToken = UUID.randomUUID().toString();
             redisService.setData("temp-oauth:" + linkToken, kakaoId, ACCESS_TOKEN_EXPIRE_TIME);
+            memberInfo.setKakaoId(null);
             return ApiResponse.success(ResponseCode.AUTH_SIGNUP_REQUIRED, new LoginResponse(linkToken, memberInfo, null, null));
         }
     }

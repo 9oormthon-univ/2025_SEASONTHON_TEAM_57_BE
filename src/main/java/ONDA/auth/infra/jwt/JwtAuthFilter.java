@@ -35,14 +35,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        System.out.println("======================================================");
         //인증 필요한거 추가
         return false;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException, AuthenticationException {
-        System.out.println("======================================================");
 
         String token = resolveToken(request);
 

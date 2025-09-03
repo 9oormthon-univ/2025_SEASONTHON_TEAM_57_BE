@@ -2,6 +2,7 @@ package ONDA.global.response;
 
 import ONDA.global.exception.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class ApiResponse<T> {
     private boolean success;
+    @Schema(description = "응답 코드", example = "A001")
     private String code;
+    @Schema(description = "메세지", example = "성공")
     private String message;
     private T data;
 
