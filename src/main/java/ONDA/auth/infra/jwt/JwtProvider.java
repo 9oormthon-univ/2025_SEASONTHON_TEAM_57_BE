@@ -5,6 +5,7 @@ import ONDA.domain.member.entity.Role;
 import ONDA.global.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
@@ -81,6 +82,10 @@ public class JwtProvider {
 
 
         return TokenClaims.of(userId, roles, type, jti);
+    }
+
+    public String resolveToken(String bearer) {
+        return (bearer != null && bearer.startsWith("Bearer ")) ? bearer.substring(7) : null;
     }
 }
 

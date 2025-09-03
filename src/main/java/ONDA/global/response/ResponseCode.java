@@ -6,10 +6,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ResponseCode {
-    SUCCESS(200, "C000", "성공"),
-    CREATED(201, "C001", "생성 성공");
+    SUCCESS("C000", "성공"),
+    CREATED( "C001", "생성 성공"),
 
-    private final int status;
+    AUTH_LOGIN_SUCCESS("A001","로그인 성공"),
+    AUTH_SIGNUP_REQUIRED("A002","회원가입 필요");
+
     private final String code;
     private final String message;
 }
