@@ -35,10 +35,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Transactional(readOnly = true)
     @Override
-    public ApiResponse<List<ChallengeResponse>> getAllChallenges(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(NotFoundMemberException::new);
-
+    public ApiResponse<List<ChallengeResponse>> getAllChallenges() {
         List<ChallengeResponse> challenges= challengeRepository.findAll().stream()
                 .map(ChallengeResponse::new)
                 .toList();

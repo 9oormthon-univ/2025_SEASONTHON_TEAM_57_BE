@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ChallengeService {
     void saveChallenge(Long memberId, ChallengeRequest dto);
-    ApiResponse<List<ChallengeResponse>> getAllChallenges(Long memberId);
+    ApiResponse<List<ChallengeResponse>> getAllChallenges();
 }
