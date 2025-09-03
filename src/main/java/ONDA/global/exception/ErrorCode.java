@@ -16,10 +16,11 @@ public enum ErrorCode {
     ACCESS_DENIED(403, "AUTH003", "접근 권한이 없음"),
     SIGNUP_SESSION_EXPIRED(401, "AUTH004", "회원가입 링크 만료"),
     KAKAO_INVALID_TOKEN(401, "OAUTH_KAKAO_400", "인가 코드 오류/만료"),
-    KAKAO_INTERNAL_ERROR(500, "OAUTH_KAKAO_500", "카카오 서버 오류");
+    KAKAO_INTERNAL_ERROR(500, "OAUTH_KAKAO_500", "카카오 서버 오류"),
 
 
     //도메인 에러 코드 작성
+    NOT_MEMBER_FOUND(404,"MEMBER-404", "회원을 찾을 수 없습니다.");
 
     private final int status;
     private final String code;
