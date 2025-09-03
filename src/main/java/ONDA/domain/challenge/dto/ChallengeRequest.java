@@ -1,15 +1,19 @@
 package ONDA.domain.challenge.dto;
 
 import ONDA.domain.challenge.entity.Challenge;
+import ONDA.domain.challenge.entity.ChallengeCategory;
 import ONDA.domain.challenge.entity.ProgressStatus;
 import ONDA.domain.challenge.entity.ReviewStatus;
 import ONDA.domain.member.entity.Member;
+import ONDA.global.category.Category;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -29,7 +33,10 @@ public class ChallengeRequest {
     @Schema(description = "챌린지 종료일", example = "2025-09-08")
     private LocalDate endDate;
 
-    public Challenge toEntity(Member member) {
+    @Schema(description = "챌린지 카테고리", example = "[1,2]")
+    private List<Long> categoryIds;
+
+    public Challenge toEntity(Member member, List<Category> categoryList) {
         Challenge challenge = Challenge.builder()
                 .title(title)
                 .content(content)
@@ -43,6 +50,17 @@ public class ChallengeRequest {
 
         // 연관관계 설정
         challenge.setAuthor(member);
+
+        List<ChallengeCategory> challengeCategories = categoryList.stream()
+                .map(cat -> {
+                    ChallengeCategory cc = new ChallengeCategory();
+                    cc.setChallenge(challenge);
+                    cc.setCategory(cat);
+                    return cc;
+                })
+                .collect(Collectors.toList());
+
+        challenge.setCategories(challengeCategories);
         return challenge;
     }
 }

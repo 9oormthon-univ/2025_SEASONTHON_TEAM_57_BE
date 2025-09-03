@@ -1,6 +1,7 @@
 package ONDA.domain.challenge.dto;
 
 import ONDA.domain.challenge.entity.Challenge;
+import ONDA.domain.challenge.entity.ChallengeCategory;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +10,8 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -42,6 +45,9 @@ public class ChallengeResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
+    @Schema(description = "챌린지 카테고리", example = "외국어 · 번역 · 통역")
+    private List<String> challengeCategories = new ArrayList<>();
+
     public ChallengeResponse(Challenge challenge) {
         this.author = challenge.getAuthor().getNickname();
         this.title = challenge.getTitle();
@@ -52,5 +58,10 @@ public class ChallengeResponse {
         this.startDate = challenge.getStartDate();
         this.endDate = challenge.getEndDate();
         this.createdAt = challenge.getCreatedAt();
+
+        List<ChallengeCategory> categories = challenge.getCategories();
+        for(ChallengeCategory challengeCategory : categories){
+            challengeCategories.add(challengeCategory.getCategory().getName());
+        }
     }
 }
