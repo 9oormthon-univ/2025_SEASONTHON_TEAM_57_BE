@@ -59,8 +59,13 @@ public class KakaoOAuthClient {
                 .bodyToMono(KakaoMemberInfoResponse.class)
                 .block();
 
-        Profile profile = userInfo.getKakaoAccount().getProfile();
 
-        return new TemporaryMemberInfo(userInfo.getId(), profile.getIsDefaultImage(), profile.getProfileImageUrl(), userInfo.getKakaoAccount().getGender());
+        KakaoMemberInfoResponse.KakaoAccount kakaoAccount = userInfo.getKakaoAccount();
+        if (kakaoAccount == null) { //선택항목 동의 x인 경우
+            return new TemporaryMemberInfo(userInfo.getId());
+        }
+        Profile profile = kakaoAccount.getProfile();
+
+        return new TemporaryMemberInfo(userInfo.getId(), profile.getIsDefaultImage(), profile.getProfileImageUrl(), kakaoAccount.getGender());
     }
 }

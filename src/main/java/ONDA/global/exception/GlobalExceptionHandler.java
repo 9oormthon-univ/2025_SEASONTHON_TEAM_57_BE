@@ -1,6 +1,7 @@
 package ONDA.global.exception;
 
 import ONDA.global.response.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
@@ -41,8 +43,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handle(Exception e) {
+        log.error("==================== Exception ====================\n  message : {}\n=====================================================\n", e.toString(), e);
         ErrorCode ec = ErrorCode.BAD_REQUEST;
-
         return ResponseEntity.
                 status(400)
                 .body(ApiResponse.error(ec));
