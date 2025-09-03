@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class Challenge {
     @Id
     @GeneratedValue
-    @Column(name = "challenge_id")
+    @Column(name = "challenge_id", unique = true, nullable = false, updatable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -11,14 +11,14 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-public class ChallengeRequestDto {
+public class ChallengeRequest {
     private String title;
     private String content;
     private String image;
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public ChallengeRequestDto(Challenge challenge) {
+    public ChallengeRequest(Challenge challenge) {
         this.title = challenge.getTitle();
         this.content = challenge.getContent();
         this.image = challenge.getImage();

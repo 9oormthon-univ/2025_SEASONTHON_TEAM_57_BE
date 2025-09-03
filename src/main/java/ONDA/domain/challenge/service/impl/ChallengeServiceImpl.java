@@ -1,6 +1,6 @@
 package ONDA.domain.challenge.service.impl;
 
-import ONDA.domain.challenge.dto.ChallengeRequestDto;
+import ONDA.domain.challenge.dto.ChallengeRequest;
 import ONDA.domain.challenge.entity.Challenge;
 import ONDA.domain.challenge.repository.ChallengeRepository;
 import ONDA.domain.challenge.service.inf.ChallengeService;
@@ -22,7 +22,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final MemberRepository memberRepository;
 
     @Override
-    public void saveChallenge(Long memberId, ChallengeRequestDto dto){
+    public void saveChallenge(Long memberId, ChallengeRequest dto){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -32,12 +32,12 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ChallengeRequestDto> getAllChallenges(Long memberId) {
+    public List<ChallengeRequest> getAllChallenges(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
         return challengeRepository.findAll().stream()
-                .map(ChallengeRequestDto::new)
+                .map(ChallengeRequest::new)
                 .toList();
     }
 }

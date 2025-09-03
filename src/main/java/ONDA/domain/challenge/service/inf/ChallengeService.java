@@ -1,10 +1,10 @@
 package ONDA.domain.challenge.service.inf;
 
-import ONDA.domain.challenge.dto.ChallengeRequestDto;
+import ONDA.domain.challenge.dto.ChallengeRequest;
 
 import java.util.List;
 
 public interface ChallengeService {
-    void saveChallenge(Long memberId, ChallengeRequestDto dto);
-    List<ChallengeRequestDto> getAllChallenges(Long memberId);
+    void saveChallenge(Long memberId, ChallengeRequest dto);
+    List<ChallengeRequest> getAllChallenges(Long memberId);
 }
