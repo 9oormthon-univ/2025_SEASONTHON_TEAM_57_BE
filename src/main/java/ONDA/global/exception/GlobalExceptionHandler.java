@@ -21,6 +21,13 @@ public class GlobalExceptionHandler {
                 status(400)
                 .body(ApiResponse.error(ec));
     }
+    @ExceptionHandler(NotFoundMemberException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNotFoundMember(NotFoundMemberException e) {
+        ErrorCode ec = e.getErrorCode();
+        return ResponseEntity.
+                status(404)
+                .body(ApiResponse.error(ec));
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {

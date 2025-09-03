@@ -2,7 +2,6 @@ package ONDA.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.security.core.AuthenticationException;
 
 @Getter
 @AllArgsConstructor
@@ -20,9 +19,10 @@ public enum ErrorCode {
     KAKAO_INTERNAL_ERROR("OAUTH_KAKAO_500", "카카오 서버 오류"),
 
     //Validation
-    INVALID_INPUT_VALUE("V001", "요청 값 검증에 실패");
+    INVALID_INPUT_VALUE("V001", "요청 값 검증에 실패"),
 
     //도메인 에러 코드 작성
+    NOT_MEMBER_FOUND("MEMBER-404", "회원을 찾을 수 없습니다.");
 
     private final String code;
     private final String message;
