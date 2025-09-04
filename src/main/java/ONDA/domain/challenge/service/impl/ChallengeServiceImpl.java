@@ -101,11 +101,8 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
-    public ApiResponse<ChallengeResponse> getChallenge(Long memberId, Long challengeId){
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(NotFoundMemberException::new);
-
-        Challenge challenge = challengeRepository.findByAuthorAndId(member, challengeId)
+    public ApiResponse<ChallengeResponse> getChallenge(Long challengeId){
+        Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_CHALLENGE_FOUND));
 
         ChallengeResponse challengeResponse = new ChallengeResponse(challenge);

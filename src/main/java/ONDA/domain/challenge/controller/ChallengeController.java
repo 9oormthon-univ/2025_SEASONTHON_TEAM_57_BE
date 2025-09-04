@@ -69,9 +69,8 @@ public class ChallengeController {
 
     @Operation(summary = "챌린지 조회", description = "챌린지 하나를 조회합니다")
     @GetMapping("/{challengeId}")
-    public ResponseEntity<ApiResponse<ChallengeResponse>> getChallenge(@PathVariable("challengeId") Long challengeId,
-                                                                       @AuthenticationPrincipal Long memberId) {
-        ApiResponse<ChallengeResponse> response = challengeService.getChallenge(memberId, challengeId);
+    public ResponseEntity<ApiResponse<ChallengeResponse>> getChallenge(@PathVariable("challengeId") Long challengeId) {
+        ApiResponse<ChallengeResponse> response = challengeService.getChallenge(challengeId);
         return ResponseEntity.status(200).body(response);
     }
 
