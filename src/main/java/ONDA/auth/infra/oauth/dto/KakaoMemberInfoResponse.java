@@ -25,7 +25,7 @@ public class KakaoMemberInfoResponse {
         public Profile profile;
 
         //성별 male | female
-        private Gender gender;
+        private String gender;
 
 
         @Getter
