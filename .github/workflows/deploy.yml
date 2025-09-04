@@ -2,7 +2,7 @@ name: CI/CD to EC2
 
 on:
   push:
-    branches: [ "12/fix/kakao-oauth" ]
+    branches: [ "dev" ]
   workflow_dispatch: {}
 
 jobs:
