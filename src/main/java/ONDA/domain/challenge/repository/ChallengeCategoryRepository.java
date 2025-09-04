@@ -2,6 +2,7 @@ package ONDA.domain.challenge.repository;
 
 import ONDA.domain.challenge.entity.Challenge;
 import ONDA.domain.challenge.entity.ChallengeCategory;
+import ONDA.domain.challenge.entity.ProgressStatus;
 import ONDA.domain.challenge.entity.ReviewStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,12 @@ public interface ChallengeCategoryRepository extends JpaRepository<ChallengeCate
     List<Challenge> findChallengesByCategoryIdAndReviewStatus(
             @Param("categoryId") Long categoryId,
             @Param("status") ReviewStatus status);
+
+    @Query("SELECT cc.challenge FROM ChallengeCategory cc " +
+            "WHERE cc.category.id = :categoryId " +
+            "AND cc.challenge.reviewStatus = :reviewStatus " +
+            "AND cc.challenge.progressStatus IN :progressStatuses")
+    List<Challenge> findChallengesByCategoryIdAndStatuses(@Param("categoryId") Long categoryId,
+                                                          @Param("reviewStatus") ReviewStatus reviewStatus,
+                                                          @Param("progressStatuses") List<ProgressStatus> progressStatuses);
 }
