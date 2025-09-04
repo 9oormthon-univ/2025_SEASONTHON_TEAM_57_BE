@@ -47,10 +47,10 @@ public class DevTestMemberInit implements CommandLineRunner {
                 .build();
         memberRepository.save(m);
 
-        Category category1 = categoryRepository.findById(10L)
+        Category category1 = categoryRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
-        Category category2 = categoryRepository.findById(11L)
+        Category category2 = categoryRepository.findById(2L)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
         Challenge challenge = Challenge.builder()
