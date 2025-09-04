@@ -1,7 +1,11 @@
 package ONDA.global.category;
 
+import ONDA.domain.talent.post.entity.PostCategory;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,4 +21,7 @@ public class Category {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "category")
+    private List<PostCategory> postCategories = new ArrayList<>();
 }
