@@ -24,6 +24,7 @@ public enum ErrorCode {
     //도메인 에러 코드 작성
     NOT_MEMBER_FOUND("MEMBER-404", "회원을 찾을 수 없습니다."),
     NOT_CHALLENGE_FOUND("CHALLENGE-404", "챌린지를 찾을 수 없습니다."),
+    NOT_CHALLENGE_POST_FOUND("CHALLENGE-POST-404", "챌린지 인증글을 찾을 수 없습니다."),
     CHALLENGE_ALREADY_REVIEWED("CHALLENGE001", "이미 심사 완료된 챌린지는 상태 변경이 불가합니다.");
 
     private final String code;
