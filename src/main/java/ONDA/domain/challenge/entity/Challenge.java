@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 public class Challenge {
     @Id
     @GeneratedValue
-    @Column(name = "challenge_id")
+    @Column(name = "challenge_id", unique = true, nullable = false, updatable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,4 +41,7 @@ public class Challenge {
     private LocalDate endDate;
 
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChallengeCategory> categories = new ArrayList<>();
 }
