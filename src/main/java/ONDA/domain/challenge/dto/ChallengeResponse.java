@@ -29,10 +29,10 @@ public class ChallengeResponse {
     @Schema(description = "이미지 url", example = "https://example.com/image2.png")
     private String image;
 
-    @Schema(description = "심사 상태", example = "보류 중/승인됨/거절됨")
+    @Schema(description = "심사 상태", example = "PENDING/APPROVED/REJECTED")
     private String reviewStatus;
 
-    @Schema(description = "진행 상태", example = "진행 예정/진행 중/진행 완료")
+    @Schema(description = "진행 상태", example = "NOT_STARTED/ONGOING/ENDED")
     private String progressStatus;
 
     @Schema(description = "챌린지 시작일", example = "2025-09-01")
