@@ -89,6 +89,18 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
+    public ApiResponse<List<ChallengeResponse>> getMyChallenges(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        List<ChallengeResponse> challenges= challengeRepository.findByAuthor(member).stream()
+                .map(ChallengeResponse::new)
+                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, challenges);
+    }
+
+    @Override
     public ApiResponse<ChallengeResponse> getChallenge(Long memberId, Long challengeId){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);

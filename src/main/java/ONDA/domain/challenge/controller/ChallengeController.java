@@ -5,7 +5,6 @@ import ONDA.domain.challenge.dto.ChallengeResponse;
 import ONDA.domain.challenge.entity.ProgressStatus;
 import ONDA.domain.challenge.entity.ReviewStatus;
 import ONDA.domain.challenge.service.inf.ChallengeService;
-import ONDA.global.exception.ErrorCode;
 import ONDA.global.response.ApiResponse;
 import ONDA.global.response.ResponseCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +28,13 @@ public class ChallengeController {
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getAllChallenges() {
         ApiResponse<List<ChallengeResponse>> response = challengeService.getAllChallenges();
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @Operation(summary = "내가 등록한 챌린지 리스트 조회", description = "내가 등록한 모든 챌린지를 조회합니다")
+    @GetMapping("/my-list")
+    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getMyChallenges(@AuthenticationPrincipal Long memberId) {
+        ApiResponse<List<ChallengeResponse>> response = challengeService.getMyChallenges(memberId);
         return ResponseEntity.status(200).body(response);
     }
 

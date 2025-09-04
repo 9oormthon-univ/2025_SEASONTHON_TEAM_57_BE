@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface ChallengeRepository extends JpaRepository<Challenge,Long> {
     Optional<Challenge> findByAuthorAndId(Member member, Long ChallengeId);
+    List<Challenge> findByAuthor(Member member);
     List<Challenge> findByReviewStatus(ReviewStatus reviewStatus);
     List<Challenge> findByProgressStatusAndReviewStatus(ProgressStatus progressStatus,ReviewStatus reviewStatus);
+
 }
