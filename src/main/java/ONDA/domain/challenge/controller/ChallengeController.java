@@ -24,12 +24,12 @@ import java.util.List;
 public class ChallengeController {
     private final ChallengeService challengeService;
 
-    @Operation(summary = "모든 챌린지 조회", description = "현재 생성된 모든 챌린지를 조회합니다")
-    @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getAllChallenges() {
-        ApiResponse<List<ChallengeResponse>> response = challengeService.getAllChallenges();
-        return ResponseEntity.status(200).body(response);
-    }
+//    @Operation(summary = "모든 챌린지 조회", description = "현재 생성된 모든 챌린지를 조회합니다")
+//    @GetMapping("/all")
+//    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getAllChallenges() {
+//        ApiResponse<List<ChallengeResponse>> response = challengeService.getAllChallenges();
+//        return ResponseEntity.status(200).body(response);
+//    }
 
     @Operation(summary = "내가 등록한 챌린지 리스트 조회", description = "내가 등록한 모든 챌린지를 조회합니다")
     @GetMapping("/my-list")
@@ -46,17 +46,17 @@ public class ChallengeController {
         return ResponseEntity.status(200).body(response);
     }
 
-    @Operation(summary = "승인된 챌린지 리스트 진행 카테고리별 조회", description = "심사 승인된 챌린지를 진행 카테고리별 조회합니다")
-    @GetMapping("/approve-list/progress")
-    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getChallengesByProgressStatus(
-            @Parameter(
-                    description = "진행 상태 (NOT_STARTED: 진행 예정, ONGOING: 진행 중, ENDED: 진행 완료)",
-                    example = "ONGOING"
-            )
-            @RequestParam("progressStatus") ProgressStatus progressStatus) {
-        ApiResponse<List<ChallengeResponse>> response = challengeService.getChallengesByProgressStatus(progressStatus);
-        return ResponseEntity.status(200).body(response);
-    }
+//    @Operation(summary = "승인된 챌린지 리스트 진행 카테고리별 조회", description = "심사 승인된 챌린지를 진행 카테고리별 조회합니다")
+//    @GetMapping("/approve-list/progress")
+//    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getChallengesByProgressStatus(
+//            @Parameter(
+//                    description = "진행 상태 (NOT_STARTED: 진행 예정, ONGOING: 진행 중, ENDED: 진행 완료)",
+//                    example = "ONGOING"
+//            )
+//            @RequestParam("progressStatus") ProgressStatus progressStatus) {
+//        ApiResponse<List<ChallengeResponse>> response = challengeService.getChallengesByProgressStatus(progressStatus);
+//        return ResponseEntity.status(200).body(response);
+//    }
 
     @Operation(summary = "챌린지 생성", description = "챌린지 하나를 생성합니다")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "챌린지 생성 성공")
