@@ -26,7 +26,15 @@ public enum ErrorCode {
     NOT_CHALLENGE_FOUND("CHALLENGE-404", "챌린지를 찾을 수 없습니다."),
     NOT_CHALLENGE_POST_FOUND("CHALLENGE-POST-404", "챌린지 인증글을 찾을 수 없습니다."),
     CHALLENGE_ALREADY_REVIEWED("CHALLENGE001", "이미 심사 완료된 챌린지는 상태 변경이 불가합니다."),
-    ALREADY_VOTED("VOTE001", "이미 투표하였습니다.");
+    ALREADY_VOTED("VOTE001", "이미 투표하였습니다."),
+
+
+    OWNER_MISMATCH("OWNER_MISMATCH","삭제 권한 없음(해당 글의 작성자가 아님)."),
+    POST_NOT_FOUND("POST-404", "게시글을 찾을 수 없음"),
+
+    COMMENT_NOT_FOUND("COMMENT-404", "댓글을 찾을 수 없음"),
+    PARENT_NOT_FOUND("PARENT-404", "존재하지 않는 부모 댓글입니다.(대댓글 전용)"),
+    COMMENT_POST_MISMATCH("COMMENT_MISMATCH", "대댓글을 달기 위한 댓글이 해당글에 소속되어있지 않음");
 
     private final String code;
     private final String message;

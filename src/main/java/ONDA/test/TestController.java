@@ -38,6 +38,15 @@ public class TestController {
         return ResponseEntity.status(200).body("pong");
     }
 
+    @PostMapping("/ping")
+    @Operation(summary = "post 요청 확인용 ping-pong")
+    @ApiResponse(
+            responseCode = "200",
+            content = @Content(schema = @Schema(type = "string", example = "pong")))
+    public ResponseEntity<String> ping2() {
+        return ResponseEntity.status(200).body("pong");
+    }
+
     @PostMapping("/auth")
     @Operation(summary = "테스트 계정 엑세스토큰 발급")
     @ApiResponse(
@@ -45,6 +54,13 @@ public class TestController {
             content = @Content(schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1...access")))
     public ResponseEntity<String> auth() {
         Optional<Member> member = memberService.findMember(123456789L);
+        return ResponseEntity.status(200)
+                .body(jwtProvider.generateAccessToken(member.get().getId(), Role.ROLE_USER));
+    }
+
+    @PostMapping("/auth2")
+    public ResponseEntity<String> auth2() {
+        Optional<Member> member = memberService.findMember(987654321L);
         return ResponseEntity.status(200)
                 .body(jwtProvider.generateAccessToken(member.get().getId(), Role.ROLE_USER));
     }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -56,15 +57,18 @@ public class SecurityConfig {
                                        AccessDeniedHandler deniedHandler) throws Exception {
         http.securityMatcher("/**");
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().authenticated())
-            .exceptionHandling(ex -> ex
-                    .authenticationEntryPoint(entryPoint)
-                    .accessDeniedHandler(deniedHandler)
-        );
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET, "/api/talent-posts/my").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/talent-posts/recommended").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/talent-posts/**").permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(entryPoint)
+                        .accessDeniedHandler(deniedHandler)
+                );
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

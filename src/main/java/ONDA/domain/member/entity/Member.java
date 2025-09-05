@@ -31,6 +31,7 @@ public class Member {
 
     private Long kakaoId;
 
+    @Enumerated(EnumType.STRING)
     private Role role = ROLE_USER;
 
     @Builder
