@@ -69,6 +69,7 @@ public class ChallengeVoteServiceImpl implements ChallengeVoteService {
                 .map(p -> new VoteResultResponse(
                         p.getId(),
                         p.getNickname(),
+                        p.getProfile(),
                         challengeVoteRepository.countByChallengeAndParticipant(challenge, p),
                         0
                 ))
@@ -80,6 +81,7 @@ public class ChallengeVoteServiceImpl implements ChallengeVoteService {
                 .map(r -> new VoteResultResponse(
                         r.getParticipantId(),
                         r.getParticipantNickname(),
+                        r.getParticipantProfile(),
                         r.getVoteCount(),
                         rankCounter.getAndIncrement()
                 ))

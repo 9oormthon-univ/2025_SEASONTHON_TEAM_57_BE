@@ -13,8 +13,8 @@ import java.util.Optional;
 
 public interface ChallengeRepository extends JpaRepository<Challenge,Long> {
     Optional<Challenge> findByIdAndProgressStatus(Long ChallengeId, ProgressStatus progressStatus);
-    List<Challenge> findByAuthor(Member member);
-    List<Challenge> findByReviewStatus(ReviewStatus reviewStatus);
+    List<Challenge> findByAuthorOrderByIdDesc(Member member);
+    List<Challenge> findByReviewStatusOrderByIdDesc(ReviewStatus reviewStatus);
     List<Challenge> findByProgressStatusAndReviewStatus(ProgressStatus progressStatus,ReviewStatus reviewStatus);
     @Query("SELECT c " +
             "FROM Challenge c " +
@@ -30,13 +30,13 @@ public interface ChallengeRepository extends JpaRepository<Challenge,Long> {
 
     @Query("SELECT c FROM Challenge c " +
             "WHERE c.reviewStatus = :reviewStatus " +
-            "AND c.progressStatus IN :progressStatuses")
-    List<Challenge> findChallengesByStatuses(@Param("reviewStatus") ReviewStatus reviewStatus,
+            "AND c.progressStatus IN :progressStatuses ORDER BY c.id DESC")
+    List<Challenge> findChallengesByStatusesOrderByIdDesc(@Param("reviewStatus") ReviewStatus reviewStatus,
                                             @Param("progressStatuses") List<ProgressStatus> progressStatuses);
 
     @Query("SELECT DISTINCT p.challenge " +
             "FROM ChallengePost p " +
-            "WHERE p.author = :member")
-    List<Challenge> findChallengesByParticipant(@Param("member") Member member);
+            "WHERE p.author = :member ORDER BY p.challenge.id DESC")
+    List<Challenge> findChallengesByParticipantOrderByChallengeIdDesc(@Param("member") Member member);
 
 }

@@ -86,7 +86,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         );
 
         List<ChallengeResponse> challenges = challengeRepository
-                .findChallengesByStatuses(ReviewStatus.APPROVED, progressStatuses).stream()
+                .findChallengesByStatusesOrderByIdDesc(ReviewStatus.APPROVED, progressStatuses).stream()
                 .map(ChallengeResponse::new)
                 .toList();
 
@@ -98,7 +98,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
-        List<ChallengeResponse> challenges= challengeRepository.findByAuthor(member).stream()
+        List<ChallengeResponse> challenges= challengeRepository.findByAuthorOrderByIdDesc(member).stream()
                 .map(ChallengeResponse::new)
                 .toList();
 
@@ -117,7 +117,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public ApiResponse<List<ChallengeResponse>> getChallengesByReviewStatus(ReviewStatus reviewStatus){
-        List<ChallengeResponse> challenges = challengeRepository.findByReviewStatus(reviewStatus).stream()
+        List<ChallengeResponse> challenges = challengeRepository.findByReviewStatusOrderByIdDesc(reviewStatus).stream()
                 .map(ChallengeResponse::new)
                 .toList();
 
@@ -155,7 +155,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         );
 
         List<ChallengeResponse> challenges = challengeCategoryRepository
-                .findChallengesByCategoryIdAndStatuses(categoryId, ReviewStatus.APPROVED, progressStatuses).stream()
+                .findChallengesByCategoryIdAndStatusesOrderByIdDesc(categoryId, ReviewStatus.APPROVED, progressStatuses).stream()
                 .map(ChallengeResponse::new)
                 .toList();
 
@@ -167,7 +167,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
-        List<Challenge> challenges = challengeRepository.findChallengesByParticipant(member);
+        List<Challenge> challenges = challengeRepository.findChallengesByParticipantOrderByChallengeIdDesc(member);
 
         List<ChallengeResponse> responses = challenges.stream()
                 .map(ChallengeResponse::new)
