@@ -28,4 +28,10 @@ public interface ChallengeRepository extends JpaRepository<Challenge,Long> {
             @Param("progressStatus") ProgressStatus progressStatus
     );
 
+    @Query("SELECT c FROM Challenge c " +
+            "WHERE c.reviewStatus = :reviewStatus " +
+            "AND c.progressStatus IN :progressStatuses")
+    List<Challenge> findChallengesByStatuses(@Param("reviewStatus") ReviewStatus reviewStatus,
+                                            @Param("progressStatuses") List<ProgressStatus> progressStatuses);
+
 }

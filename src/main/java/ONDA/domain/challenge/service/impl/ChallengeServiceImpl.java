@@ -78,10 +78,15 @@ public class ChallengeServiceImpl implements ChallengeService {
         }
     }
 
-    @Transactional(readOnly = true)
     @Override
     public ApiResponse<List<ChallengeResponse>> getAllChallenges() {
-        List<ChallengeResponse> challenges= challengeRepository.findAll().stream()
+        List<ProgressStatus> progressStatuses = List.of(
+                ProgressStatus.NOT_STARTED,
+                ProgressStatus.ONGOING
+        );
+
+        List<ChallengeResponse> challenges = challengeRepository
+                .findChallengesByStatuses(ReviewStatus.APPROVED, progressStatuses).stream()
                 .map(ChallengeResponse::new)
                 .toList();
 

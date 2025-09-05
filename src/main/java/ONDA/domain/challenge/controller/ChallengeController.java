@@ -40,9 +40,16 @@ public class ChallengeController {
 
     @Operation(summary = "승인된 챌린지 리스트 카테고리별 조회", description = "심사 승인된 챌린지를 재능 카테고리별 조회합니다")
     @GetMapping("/approve-list")
-    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getAllChallenges(
+    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getChallengesByCategory(
             @RequestParam("categoryId") Long categoryId) {
         ApiResponse<List<ChallengeResponse>> response = challengeService.getChallengesByCategory(categoryId);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @Operation(summary = "승인된 챌린지 리스트 전체 조회", description = "심사 승인된 챌린지를 전체 조회합니다")
+    @GetMapping("/approve-list/all")
+    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getAllChallenges() {
+        ApiResponse<List<ChallengeResponse>> response = challengeService.getAllChallenges();
         return ResponseEntity.status(200).body(response);
     }
 

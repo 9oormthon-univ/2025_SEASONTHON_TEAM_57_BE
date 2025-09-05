@@ -63,6 +63,14 @@ public class DevTestMemberInit implements CommandLineRunner {
                 ProgressStatus.ONGOING, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
                 LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
 
+        Challenge challenge3 = addChallenge("세 번째 챌린지", "매일 20분 명상하기","https://example.com/image2.png",ReviewStatus.APPROVED,
+                ProgressStatus.NOT_STARTED, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
+                LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
+
+        Challenge challenge4 = addChallenge("두네 번째 챌린지", "매일 20분 명상하기","https://example.com/image2.png",ReviewStatus.APPROVED,
+                ProgressStatus.ENDED, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
+                LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
+
         addChallengePost(m, challenge1, LocalDate.of(2025, 9, 1));
 
         addChallengePost(m, challenge2, LocalDate.of(2025, 9, 1));
