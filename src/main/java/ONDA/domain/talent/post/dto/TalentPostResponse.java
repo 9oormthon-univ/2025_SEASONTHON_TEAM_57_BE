@@ -53,6 +53,9 @@ public class TalentPostResponse {
         
         @Schema(description = "카테고리 이름", example = "프로그래밍")
         private String name;
+
+        @Schema(description = "카테고리 타입", example = "teach")
+        private PostType type;
     }
     
     public static TalentPostResponse from(TalentPost post) {
@@ -70,6 +73,7 @@ public class TalentPostResponse {
                         .map(pc -> CategoryResponse.builder()
                                 .id(pc.getCategory().getId())
                                 .name(pc.getCategory().getName())
+                                .type(pc.getType())
                                 .build())
                         .toList())
                 .build();

@@ -7,6 +7,7 @@ import ONDA.domain.talent.post.dto.TalentPostListResponse;
 import ONDA.domain.talent.post.dto.TalentPostResponse;
 import ONDA.domain.talent.post.dto.TalentPostUpdateRequest;
 import ONDA.domain.talent.post.entity.PostCategory;
+import ONDA.domain.talent.post.entity.PostType;
 import ONDA.domain.talent.post.entity.TalentPost;
 import ONDA.domain.talent.post.repository.TalentPostRepository;
 import ONDA.global.category.Category;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,15 +44,8 @@ public class TalentPostService {
                 .content(request.getContent())
                 .build();
 
-        if (request.getCategoryIds() != null && !request.getCategoryIds().isEmpty()) {
-            List<Category> categories = categoryRepository.findByIdIn(request.getCategoryIds());
-            List<PostCategory> postCategories = categories.stream()
-                    .map(category -> PostCategory.builder()
-                            .post(post)
-                            .category(category)
-                            .type(request.getType())
-                            .build())
-                    .toList();
+        List<PostCategory> postCategories = createPostCategories(post, request.getLearnCategoryIds(), request.getTeachCategoryIds());
+        if (!postCategories.isEmpty()) {
             post.updateCategories(postCategories);
         }
 
@@ -82,7 +77,7 @@ public class TalentPostService {
     }
 
     public List<TalentPostListResponse> getRecommended(Long memberId) {
-        // 일단은 최신순으로
+        // 일단 최신순으로
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -110,15 +105,8 @@ public class TalentPostService {
                 request.getStatus() != null ? request.getStatus() : post.getStatus()
         );
 
-        if (request.getCategoryIds() != null) {
-            List<Category> categories = categoryRepository.findByIdIn(request.getCategoryIds());
-            List<PostCategory> postCategories = categories.stream()
-                    .map(category -> PostCategory.builder()
-                            .post(post)
-                            .category(category)
-                            .type(post.getType())
-                            .build())
-                    .toList();
+        if (request.getLearnCategoryIds() != null || request.getTeachCategoryIds() != null) {
+            List<PostCategory> postCategories = createPostCategories(post, request.getLearnCategoryIds(), request.getTeachCategoryIds());
             post.updateCategories(postCategories);
         }
 
@@ -142,5 +130,35 @@ public class TalentPostService {
         return myPosts.stream()
                 .map(TalentPostListResponse::from)
                 .toList();
+    }
+
+    private List<PostCategory> createPostCategories(TalentPost post, List<Long> learnCategoryIds, List<Long> teachCategoryIds) {
+        List<PostCategory> postCategories = new ArrayList<>();
+
+        if (learnCategoryIds != null && !learnCategoryIds.isEmpty()) {
+            List<Category> learnCategories = categoryRepository.findByIdIn(learnCategoryIds);
+            List<PostCategory> learnPostCategories = learnCategories.stream()
+                    .map(category -> PostCategory.builder()
+                            .post(post)
+                            .category(category)
+                            .type(PostType.LEARN)
+                            .build())
+                    .toList();
+            postCategories.addAll(learnPostCategories);
+        }
+
+        if (teachCategoryIds != null && !teachCategoryIds.isEmpty()) {
+            List<Category> teachCategories = categoryRepository.findByIdIn(teachCategoryIds);
+            List<PostCategory> teachPostCategories = teachCategories.stream()
+                    .map(category -> PostCategory.builder()
+                            .post(post)
+                            .category(category)
+                            .type(PostType.TEACH)
+                            .build())
+                    .toList();
+            postCategories.addAll(teachPostCategories);
+        }
+
+        return postCategories;
     }
 }

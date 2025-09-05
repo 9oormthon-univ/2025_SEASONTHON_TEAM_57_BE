@@ -11,8 +11,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TalentPostRepository extends JpaRepository<TalentPost, Long> {
-    // 페이징 처리된 전체 조회 (JpaRepository에서 제공)
-    Page<TalentPost> findAll(Pageable pageable);
 
     // 카테고리별
     @Query("SELECT DISTINCT p FROM TalentPost p " +

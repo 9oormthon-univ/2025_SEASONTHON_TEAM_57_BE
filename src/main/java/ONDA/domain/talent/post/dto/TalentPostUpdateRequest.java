@@ -25,6 +25,9 @@ public class TalentPostUpdateRequest {
     @Schema(description = "게시글 상태", example = "open/close")
     private PostStatus status;
     
-    @Schema(description = "카테고리 ID 목록", example = "[1, 2]")
-    private List<Long> categoryIds;
+    @Schema(description = "배우고 싶은 카테고리 ID 목록", example = "[1, 2]")
+    private List<Long> learnCategoryIds;
+    
+    @Schema(description = "가르치고 싶은 카테고리 ID 목록", example = "[3, 4]")
+    private List<Long> teachCategoryIds;
 }

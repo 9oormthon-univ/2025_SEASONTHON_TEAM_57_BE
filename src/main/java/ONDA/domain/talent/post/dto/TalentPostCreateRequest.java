@@ -26,6 +26,9 @@ public class TalentPostCreateRequest {
     @Schema(description = "게시글 내용", example = "5년차 개발자가 Java 기초부터 실무까지 알려드립니다.")
     private String content;
     
-    @Schema(description = "카테고리 ID 목록", example = "[1, 2]")
-    private List<Long> categoryIds;
+    @Schema(description = "배우고 싶은 카테고리 ID 목록", example = "[1, 2]")
+    private List<Long> learnCategoryIds;
+    
+    @Schema(description = "알려주고 싶은 카테고리 ID 목록", example = "[3, 4]")
+    private List<Long> teachCategoryIds;
 }
