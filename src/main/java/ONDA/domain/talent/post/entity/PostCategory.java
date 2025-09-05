@@ -3,6 +3,7 @@ package ONDA.domain.talent.post.entity;
 import ONDA.global.category.Category;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,11 @@ public class PostCategory {
 
     @Enumerated(EnumType.STRING)
     private PostType type;
+
+    @Builder
+    public PostCategory(TalentPost post, Category category, PostType type) {
+        this.post = post;
+        this.category = category;
+        this.type = type;
+    }
 }

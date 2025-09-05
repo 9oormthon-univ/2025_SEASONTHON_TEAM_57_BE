@@ -1,8 +1,6 @@
 package ONDA.domain.talent.comment.entity;
 
 import ONDA.domain.member.entity.Member;
-import ONDA.domain.talent.post.entity.PostStatus;
-import ONDA.domain.talent.post.entity.PostType;
 import ONDA.domain.talent.post.entity.TalentPost;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -45,4 +43,16 @@ public class Comment {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @Builder
+    public Comment(Member author, TalentPost post, Comment parent, String content) {
+        this.author = author;
+        this.post = post;
+        this.parent = parent;
+        this.content = content;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }

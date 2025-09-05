@@ -4,6 +4,7 @@ import ONDA.domain.member.entity.Member;
 import ONDA.domain.talent.comment.entity.Comment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -43,4 +44,25 @@ public class TalentPost {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostCategory> categories = new ArrayList<>();
+
+    @Builder
+    public TalentPost(Member author, PostType type, String title, String content) {
+        this.author = author;
+        this.type = type;
+        this.title = title;
+        this.content = content;
+        this.status = PostStatus.OPEN;
+    }
+
+    public void update(PostType type, String title, String content, PostStatus status) {
+        this.type = type;
+        this.title = title;
+        this.content = content;
+        this.status = status;
+    }
+
+    public void updateCategories(List<PostCategory> categories) {
+        this.categories.clear();
+        this.categories.addAll(categories);
+    }
 }
