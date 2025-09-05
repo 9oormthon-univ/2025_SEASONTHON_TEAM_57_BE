@@ -78,10 +78,15 @@ public class ChallengeServiceImpl implements ChallengeService {
         }
     }
 
-    @Transactional(readOnly = true)
     @Override
     public ApiResponse<List<ChallengeResponse>> getAllChallenges() {
-        List<ChallengeResponse> challenges= challengeRepository.findAll().stream()
+        List<ProgressStatus> progressStatuses = List.of(
+                ProgressStatus.NOT_STARTED,
+                ProgressStatus.ONGOING
+        );
+
+        List<ChallengeResponse> challenges = challengeRepository
+                .findChallengesByStatuses(ReviewStatus.APPROVED, progressStatuses).stream()
                 .map(ChallengeResponse::new)
                 .toList();
 
@@ -101,11 +106,8 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
-    public ApiResponse<ChallengeResponse> getChallenge(Long memberId, Long challengeId){
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(NotFoundMemberException::new);
-
-        Challenge challenge = challengeRepository.findByAuthorAndId(member, challengeId)
+    public ApiResponse<ChallengeResponse> getChallenge(Long challengeId){
+        Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_CHALLENGE_FOUND));
 
         ChallengeResponse challengeResponse = new ChallengeResponse(challenge);
@@ -132,6 +134,20 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
+    public ApiResponse<List<ChallengeResponse>> getOngoingChallengesOrderByParticipants() {
+        List<Challenge> challenges = challengeRepository.findOngoingChallengesOrderByParticipants(
+                ReviewStatus.APPROVED,
+                ProgressStatus.ONGOING
+        );
+
+        List<ChallengeResponse> responses = challenges.stream()
+                .map(ChallengeResponse::new)
+                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, responses);
+    }
+
+    @Override
     public ApiResponse<List<ChallengeResponse>> getChallengesByCategory(Long categoryId){
         List<ProgressStatus> progressStatuses = List.of(
                 ProgressStatus.NOT_STARTED,
@@ -144,6 +160,20 @@ public class ChallengeServiceImpl implements ChallengeService {
                 .toList();
 
         return ApiResponse.success(ResponseCode.SUCCESS, challenges);
+    }
+
+    @Override
+    public ApiResponse<List<ChallengeResponse>> getMyChallengePosts(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        List<Challenge> challenges = challengeRepository.findChallengesByParticipant(member);
+
+        List<ChallengeResponse> responses = challenges.stream()
+                .map(ChallengeResponse::new)
+                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, responses);
     }
 
     @Override

@@ -42,6 +42,11 @@ public class Challenge {
 
     private LocalDateTime createdAt;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChallengePost> challengePosts = new ArrayList<>();
+
+
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChallengeCategory> categories = new ArrayList<>();
 }

@@ -32,7 +32,7 @@ public class ChallengeController {
 //    }
 
     @Operation(summary = "내가 등록한 챌린지 리스트 조회", description = "내가 등록한 모든 챌린지를 조회합니다")
-    @GetMapping("/my-list")
+    @GetMapping("/my-challenges")
     public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getMyChallenges(@AuthenticationPrincipal Long memberId) {
         ApiResponse<List<ChallengeResponse>> response = challengeService.getMyChallenges(memberId);
         return ResponseEntity.status(200).body(response);
@@ -40,9 +40,16 @@ public class ChallengeController {
 
     @Operation(summary = "승인된 챌린지 리스트 카테고리별 조회", description = "심사 승인된 챌린지를 재능 카테고리별 조회합니다")
     @GetMapping("/approve-list")
-    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getAllChallenges(
+    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getChallengesByCategory(
             @RequestParam("categoryId") Long categoryId) {
         ApiResponse<List<ChallengeResponse>> response = challengeService.getChallengesByCategory(categoryId);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @Operation(summary = "승인된 챌린지 리스트 전체 조회", description = "심사 승인된 챌린지를 전체 조회합니다")
+    @GetMapping("/approve-list/all")
+    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getAllChallenges() {
+        ApiResponse<List<ChallengeResponse>> response = challengeService.getAllChallenges();
         return ResponseEntity.status(200).body(response);
     }
 
@@ -69,9 +76,22 @@ public class ChallengeController {
 
     @Operation(summary = "챌린지 조회", description = "챌린지 하나를 조회합니다")
     @GetMapping("/{challengeId}")
-    public ResponseEntity<ApiResponse<ChallengeResponse>> getChallenge(@PathVariable("challengeId") Long challengeId,
-                                                                       @AuthenticationPrincipal Long memberId) {
-        ApiResponse<ChallengeResponse> response = challengeService.getChallenge(memberId, challengeId);
+    public ResponseEntity<ApiResponse<ChallengeResponse>> getChallenge(@PathVariable("challengeId") Long challengeId) {
+        ApiResponse<ChallengeResponse> response = challengeService.getChallenge(challengeId);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @Operation(summary = "지금 HOT한 챌린지 조회", description = "참여자 수를 기반으로 챌린지 목록을 조회합니다")
+    @GetMapping("/popular")
+    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getPopularChallenges() {
+        ApiResponse<List<ChallengeResponse>> response = challengeService.getOngoingChallengesOrderByParticipants();
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @Operation(summary = "내가 참여한 챌린지 리스트 조회", description = "내가 참여한 챌린지 리스트를 조회합니다")
+    @GetMapping("/my-challenge-posts")
+    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getMyChallengePosts(@AuthenticationPrincipal Long memberId) {
+        ApiResponse<List<ChallengeResponse>> response = challengeService.getMyChallengePosts(memberId);
         return ResponseEntity.status(200).body(response);
     }
 
