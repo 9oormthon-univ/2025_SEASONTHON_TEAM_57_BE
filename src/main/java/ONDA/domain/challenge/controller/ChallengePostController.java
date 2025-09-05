@@ -81,6 +81,8 @@ public class ChallengePostController {
         return ResponseEntity.status(201).body(ApiResponse.success(ResponseCode.CREATED, null));
     }
 
+    @Operation(summary = "챌린지 투표 결과 조회",
+            description = "챌린지의 투표 결과를 조회합니다.")
     @GetMapping("/{challengeId}/votes")
     public ResponseEntity<ApiResponse<List<VoteResultResponse>>> getVoteResults(@PathVariable("challengeId") Long challengeId) {
 
