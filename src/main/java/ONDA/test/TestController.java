@@ -48,4 +48,11 @@ public class TestController {
         return ResponseEntity.status(200)
                 .body(jwtProvider.generateAccessToken(member.get().getId(), Role.ROLE_USER));
     }
+
+    @PostMapping("/auth2")
+    public ResponseEntity<String> auth2() {
+        Optional<Member> member = memberService.findMember(987654321L);
+        return ResponseEntity.status(200)
+                .body(jwtProvider.generateAccessToken(member.get().getId(), Role.ROLE_USER));
+    }
 }
