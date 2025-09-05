@@ -21,8 +21,8 @@ public interface ChallengeCategoryRepository extends JpaRepository<ChallengeCate
     @Query("SELECT cc.challenge FROM ChallengeCategory cc " +
             "WHERE cc.category.id = :categoryId " +
             "AND cc.challenge.reviewStatus = :reviewStatus " +
-            "AND cc.challenge.progressStatus IN :progressStatuses")
-    List<Challenge> findChallengesByCategoryIdAndStatuses(@Param("categoryId") Long categoryId,
+            "AND cc.challenge.progressStatus IN :progressStatuses ORDER BY cc.id DESC")
+    List<Challenge> findChallengesByCategoryIdAndStatusesOrderByIdDesc(@Param("categoryId") Long categoryId,
                                                           @Param("reviewStatus") ReviewStatus reviewStatus,
                                                           @Param("progressStatuses") List<ProgressStatus> progressStatuses);
 }

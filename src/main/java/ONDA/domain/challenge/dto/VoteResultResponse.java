@@ -21,6 +21,9 @@ public class VoteResultResponse {
     @Schema(description = "참여자 닉네임", example = "홍길동")
     private String participantNickname;
 
+    @Schema(description = "참여자 프로필", example = "https://example.com/profile.png")
+    private String participantProfile;
+
     @Schema(description = "투표 수", example = "100")
     private Long voteCount;
 
