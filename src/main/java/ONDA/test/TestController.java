@@ -38,6 +38,15 @@ public class TestController {
         return ResponseEntity.status(200).body("pong");
     }
 
+    @PostMapping("/ping")
+    @Operation(summary = "post 요청 확인용 ping-pong")
+    @ApiResponse(
+            responseCode = "200",
+            content = @Content(schema = @Schema(type = "string", example = "pong")))
+    public ResponseEntity<String> ping2() {
+        return ResponseEntity.status(200).body("pong");
+    }
+
     @PostMapping("/auth")
     @Operation(summary = "테스트 계정 엑세스토큰 발급")
     @ApiResponse(
