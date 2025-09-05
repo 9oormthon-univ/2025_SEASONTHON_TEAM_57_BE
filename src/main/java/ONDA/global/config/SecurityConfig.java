@@ -61,8 +61,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/talent-posts/hot/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/talent-posts/category/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/talent-posts/my").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/talent-posts/recommended").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/talent-posts/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(entryPoint)
