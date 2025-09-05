@@ -4,6 +4,7 @@ import ONDA.domain.challenge.dto.ChallengePostRequest;
 import ONDA.domain.challenge.dto.ChallengePostResponse;
 import ONDA.domain.challenge.dto.ChallengeResponse;
 import ONDA.domain.challenge.service.inf.ChallengePostService;
+import ONDA.domain.member.dto.MemberResponse;
 import ONDA.global.response.ApiResponse;
 import ONDA.global.response.ResponseCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/challenge-posts")
 @RequiredArgsConstructor
@@ -20,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class ChallengePostController {
     private final ChallengePostService challengePostService;
 
-    @Operation(summary = "챌린지 인증글 생성", description = "챌린지 인증글 하나를 생성합니다")
+    @Operation(summary = "챌린지 인증글 생성", description = "진행중인 챌린지 인증글 하나를 생성합니다")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "챌린지 인증글 생성 성공")
     @PostMapping("")
     public ResponseEntity<ApiResponse<Void>> createChallengePost(@AuthenticationPrincipal Long memberId,
@@ -31,8 +34,38 @@ public class ChallengePostController {
 
     @Operation(summary = "챌린지 인증글 조회", description = "챌린지 인증글 하나를 조회합니다")
     @GetMapping("/{challengePostId}")
-    public ResponseEntity<ApiResponse<ChallengePostResponse>> getChallenge(@PathVariable("challengePostId") Long challengePostId) {
+    public ResponseEntity<ApiResponse<ChallengePostResponse>> getChallengePost(@PathVariable("challengePostId") Long challengePostId) {
         ApiResponse<ChallengePostResponse> response = challengePostService.getChallengePost(challengePostId);
         return ResponseEntity.status(200).body(response);
     }
+
+    @Operation(summary = "내 챌린지 인증글 리스트 챌린지별 조회", description = "내 챌린지 인증글을 챌린지별 조회합니다")
+    @GetMapping("/my/{challengeId}")
+    public ResponseEntity<ApiResponse<List<ChallengePostResponse>>> getMyChallengePostsByChallenge(
+            @AuthenticationPrincipal Long memberId,
+            @PathVariable("challengeId") Long challengeId) {
+        ApiResponse<List<ChallengePostResponse>> response = challengePostService.getMyChallengePostsByChallenge(memberId,challengeId);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @Operation(summary = "챌린지 참여자 목록 조회", description = "특정 챌린지에 인증글을 올린 참여자 목록을 조회합니다.")
+    @GetMapping("/{challengeId}/participants")
+    public ResponseEntity<ApiResponse<List<MemberResponse>>> getChallengeParticipants(
+            @PathVariable("challengeId") Long challengeId) {
+        return ResponseEntity.ok(challengePostService.getChallengeParticipants(challengeId));
+    }
+
+    @Operation(summary = "특정 챌린지 참여자의 인증글 목록 조회",
+            description = "challengeId와 memberId로 해당 챌린지에서 특정 사용자가 올린 인증글들을 조회합니다.")
+    @GetMapping("/{challengeId}/posts/{memberId}")
+    public ResponseEntity<ApiResponse<List<ChallengePostResponse>>> getMemberChallengePosts(
+            @PathVariable("challengeId") Long challengeId,
+            @PathVariable("memberId") Long memberId) {
+
+        ApiResponse<List<ChallengePostResponse>> response =
+                challengePostService.getPostsByChallengeAndMember(challengeId, memberId);
+
+        return ResponseEntity.ok(response);
+    }
+
 }

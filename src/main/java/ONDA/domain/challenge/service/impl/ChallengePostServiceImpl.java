@@ -3,13 +3,11 @@ package ONDA.domain.challenge.service.impl;
 import ONDA.domain.challenge.dto.ChallengePostRequest;
 import ONDA.domain.challenge.dto.ChallengePostResponse;
 import ONDA.domain.challenge.dto.ChallengeResponse;
-import ONDA.domain.challenge.entity.Challenge;
-import ONDA.domain.challenge.entity.ChallengeCategory;
-import ONDA.domain.challenge.entity.ChallengePost;
-import ONDA.domain.challenge.entity.ChallengePostImage;
+import ONDA.domain.challenge.entity.*;
 import ONDA.domain.challenge.repository.ChallengePostRepository;
 import ONDA.domain.challenge.repository.ChallengeRepository;
 import ONDA.domain.challenge.service.inf.ChallengePostService;
+import ONDA.domain.member.dto.MemberResponse;
 import ONDA.domain.member.entity.Member;
 import ONDA.domain.member.repository.MemberRepository;
 import ONDA.global.exception.BusinessException;
@@ -38,7 +36,7 @@ public class ChallengePostServiceImpl implements ChallengePostService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
-        Challenge challenge = challengeRepository.findById(dto.getChallengeId())
+        Challenge challenge = challengeRepository.findByIdAndProgressStatus(dto.getChallengeId(), ProgressStatus.ONGOING)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_CHALLENGE_FOUND));
 
         ChallengePost challengePost = ChallengePost.builder()
@@ -63,5 +61,41 @@ public class ChallengePostServiceImpl implements ChallengePostService {
         ChallengePostResponse challengePostResponse = new ChallengePostResponse(challengePost);
 
         return ApiResponse.success(ResponseCode.SUCCESS, challengePostResponse);
+    }
+
+    @Override
+    public ApiResponse<List<ChallengePostResponse>> getMyChallengePostsByChallenge(Long memberId, Long challengeId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_CHALLENGE_FOUND));
+
+        List<ChallengePostResponse> challengePosts= challengePostRepository.findByAuthorAndChallenge(member,challenge).stream()
+                .map(ChallengePostResponse::new)
+                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, challengePosts);
+    }
+
+    @Override
+    public ApiResponse<List<MemberResponse>> getChallengeParticipants(Long challengeId) {
+        List<Member> authors = challengePostRepository.findDistinctAuthorsByChallengeId(challengeId);
+
+        List<MemberResponse> participants = authors.stream()
+                .map(MemberResponse::new)
+                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, participants);
+    }
+
+    @Override
+    public ApiResponse<List<ChallengePostResponse>> getPostsByChallengeAndMember(Long challengeId, Long memberId) {
+        List<ChallengePostResponse> responses = challengePostRepository
+                .findByChallengeIdAndAuthorId(challengeId, memberId).stream()
+                .map(ChallengePostResponse::new)
+                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, responses);
     }
 }
