@@ -6,6 +6,7 @@ import ONDA.domain.challenge.dto.ChallengeResponse;
 import ONDA.domain.member.dto.MemberResponse;
 import ONDA.global.response.ApiResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ChallengePostService {
@@ -13,5 +14,6 @@ public interface ChallengePostService {
     ApiResponse<ChallengePostResponse> getChallengePost(Long challengePostId);
     ApiResponse<List<ChallengePostResponse>> getMyChallengePostsByChallenge(Long memberId, Long challengeId);
     ApiResponse<List<ChallengePostResponse>> getPostsByChallengeAndMember(Long challengeId, Long memberId);
+    ApiResponse<List<ChallengePostResponse>> getMyChallengePostsByDate(Long memberId, LocalDate targetDate);
     ApiResponse<List<MemberResponse>> getChallengeParticipants(Long challengeId);
 }

@@ -79,6 +79,18 @@ public class ChallengePostServiceImpl implements ChallengePostService {
     }
 
     @Override
+    public ApiResponse<List<ChallengePostResponse>> getMyChallengePostsByDate(Long memberId, LocalDate targetDate) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        List<ChallengePostResponse> challengePosts= challengePostRepository.findByAuthorAndCreateDate(member,targetDate).stream()
+                .map(ChallengePostResponse::new)
+                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, challengePosts);
+    }
+
+    @Override
     public ApiResponse<List<MemberResponse>> getChallengeParticipants(Long challengeId) {
         List<Member> authors = challengePostRepository.findDistinctAuthorsByChallengeId(challengeId);
 

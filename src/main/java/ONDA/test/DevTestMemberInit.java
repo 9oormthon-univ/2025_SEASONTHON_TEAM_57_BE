@@ -118,6 +118,7 @@ public class DevTestMemberInit implements CommandLineRunner {
         ChallengePost challengePost = ChallengePost.builder()
                 .author(author)
                 .challenge(challenge)
+                .createDate(createDate)
                 .build();
 
         ChallengePostImage challengePostImage = ChallengePostImage.of(challengePost,"\"https://example.com/image2.png\"");

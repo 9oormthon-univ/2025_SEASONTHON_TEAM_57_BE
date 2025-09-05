@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -47,6 +48,26 @@ public class ChallengePostController {
             @AuthenticationPrincipal Long memberId,
             @PathVariable("challengeId") Long challengeId) {
         ApiResponse<List<ChallengePostResponse>> response = challengePostService.getMyChallengePostsByChallenge(memberId,challengeId);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @Operation(summary = "날짜별 내 챌린지 인증글 목록 조회", description = "날짜별 내 챌린지 인증글 목록을 조회합니다")
+    @GetMapping("/my")
+    public ResponseEntity<ApiResponse<List<ChallengePostResponse>>> getMyChallengePostsByChallenge(
+            @AuthenticationPrincipal Long memberId,
+            @RequestParam(name = "year", required = false) Integer year,
+            @RequestParam(name = "month",required = false) Integer month,
+            @RequestParam(name = "day",required = false) Integer day)
+    {
+        // 현재 날짜 기준으로 기본값 설정
+        LocalDate now = LocalDate.now();
+        int targetYear = (year == null) ? now.getYear() : year;
+        int targetMonth = (month == null) ? now.getMonthValue() : month;
+        int targetDay = (day == null) ? now.getDayOfMonth() : day;
+
+        LocalDate targetDate = LocalDate.of(targetYear, targetMonth, targetDay);
+
+        ApiResponse<List<ChallengePostResponse>> response = challengePostService.getMyChallengePostsByDate(memberId,targetDate);
         return ResponseEntity.status(200).body(response);
     }
 
