@@ -34,4 +34,9 @@ public interface ChallengeRepository extends JpaRepository<Challenge,Long> {
     List<Challenge> findChallengesByStatuses(@Param("reviewStatus") ReviewStatus reviewStatus,
                                             @Param("progressStatuses") List<ProgressStatus> progressStatuses);
 
+    @Query("SELECT DISTINCT p.challenge " +
+            "FROM ChallengePost p " +
+            "WHERE p.author = :member")
+    List<Challenge> findChallengesByParticipant(@Param("member") Member member);
+
 }

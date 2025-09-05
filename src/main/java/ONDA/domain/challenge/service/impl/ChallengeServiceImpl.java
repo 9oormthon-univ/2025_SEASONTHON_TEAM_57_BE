@@ -163,6 +163,20 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
+    public ApiResponse<List<ChallengeResponse>> getMyChallengePosts(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        List<Challenge> challenges = challengeRepository.findChallengesByParticipant(member);
+
+        List<ChallengeResponse> responses = challenges.stream()
+                .map(ChallengeResponse::new)
+                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, responses);
+    }
+
+    @Override
     public void pendingChallenge(Long challengeId){
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_CHALLENGE_FOUND));

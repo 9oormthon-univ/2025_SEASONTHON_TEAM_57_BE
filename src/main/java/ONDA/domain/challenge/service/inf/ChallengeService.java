@@ -12,6 +12,7 @@ public interface ChallengeService {
     void saveChallenge(Long memberId, ChallengeRequest dto);
     ApiResponse<List<ChallengeResponse>> getAllChallenges();
     ApiResponse<List<ChallengeResponse>> getMyChallenges(Long memberId);
+    ApiResponse<List<ChallengeResponse>> getMyChallengePosts(Long memberId);
     ApiResponse<List<ChallengeResponse>> getChallengesByReviewStatus(ReviewStatus reviewStatus);
     ApiResponse<List<ChallengeResponse>> getChallengesByProgressStatus(ProgressStatus progressStatus);
     ApiResponse<List<ChallengeResponse>> getChallengesByCategory(Long categoryId);

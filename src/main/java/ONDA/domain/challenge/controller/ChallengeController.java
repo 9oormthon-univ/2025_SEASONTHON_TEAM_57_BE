@@ -32,7 +32,7 @@ public class ChallengeController {
 //    }
 
     @Operation(summary = "내가 등록한 챌린지 리스트 조회", description = "내가 등록한 모든 챌린지를 조회합니다")
-    @GetMapping("/my-list")
+    @GetMapping("/my-challenges")
     public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getMyChallenges(@AuthenticationPrincipal Long memberId) {
         ApiResponse<List<ChallengeResponse>> response = challengeService.getMyChallenges(memberId);
         return ResponseEntity.status(200).body(response);
@@ -85,6 +85,13 @@ public class ChallengeController {
     @GetMapping("/popular")
     public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getPopularChallenges() {
         ApiResponse<List<ChallengeResponse>> response = challengeService.getOngoingChallengesOrderByParticipants();
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @Operation(summary = "내가 참여한 챌린지 리스트 조회", description = "내가 참여한 챌린지 리스트를 조회합니다")
+    @GetMapping("/my-challenge-posts")
+    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getMyChallengePosts(@AuthenticationPrincipal Long memberId) {
+        ApiResponse<List<ChallengeResponse>> response = challengeService.getMyChallengePosts(memberId);
         return ResponseEntity.status(200).body(response);
     }
 
