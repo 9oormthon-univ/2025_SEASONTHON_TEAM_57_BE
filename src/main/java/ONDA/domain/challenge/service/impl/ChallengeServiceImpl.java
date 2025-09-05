@@ -129,6 +129,20 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
+    public ApiResponse<List<ChallengeResponse>> getOngoingChallengesOrderByParticipants() {
+        List<Challenge> challenges = challengeRepository.findOngoingChallengesOrderByParticipants(
+                ReviewStatus.APPROVED,
+                ProgressStatus.ONGOING
+        );
+
+        List<ChallengeResponse> responses = challenges.stream()
+                .map(ChallengeResponse::new)
+                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, responses);
+    }
+
+    @Override
     public ApiResponse<List<ChallengeResponse>> getChallengesByCategory(Long categoryId){
         List<ProgressStatus> progressStatuses = List.of(
                 ProgressStatus.NOT_STARTED,

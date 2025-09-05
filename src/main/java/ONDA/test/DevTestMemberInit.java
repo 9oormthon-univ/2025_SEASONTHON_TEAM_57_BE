@@ -1,9 +1,7 @@
 package ONDA.test;
 
-import ONDA.domain.challenge.entity.Challenge;
-import ONDA.domain.challenge.entity.ChallengeCategory;
-import ONDA.domain.challenge.entity.ProgressStatus;
-import ONDA.domain.challenge.entity.ReviewStatus;
+import ONDA.domain.challenge.entity.*;
+import ONDA.domain.challenge.repository.ChallengePostRepository;
 import ONDA.domain.challenge.repository.ChallengeRepository;
 import ONDA.domain.member.entity.Gender;
 import ONDA.domain.member.entity.Member;
@@ -28,6 +26,7 @@ public class DevTestMemberInit implements CommandLineRunner {
     private final MemberRepository memberRepository;
     private final ChallengeRepository challengeRepository;
     private final CategoryRepository categoryRepository;
+    private final ChallengePostRepository challengePostRepository;
 
     @Override
     public void run(String... args) {
@@ -47,23 +46,48 @@ public class DevTestMemberInit implements CommandLineRunner {
                 .build();
         memberRepository.save(m);
 
+        Member m2 = Member.builder()
+                .realName("테스터2")
+                .nickname("테스트계정2")
+                .gender(Gender.FEMALE)
+                .birthDate(LocalDate.of(1997, 7, 7))
+                .kakaoId(kakaoId)
+                .build();
+        memberRepository.save(m2);
+
+        Challenge challenge1 = addChallenge("첫 번째 챌린지", "매일 20분 명상하기","https://example.com/image2.png",ReviewStatus.APPROVED,
+                ProgressStatus.ONGOING, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
+                LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
+
+        Challenge challenge2 = addChallenge("두 번째 챌린지", "매일 20분 명상하기","https://example.com/image2.png",ReviewStatus.APPROVED,
+                ProgressStatus.ONGOING, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
+                LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
+
+        addChallengePost(m, challenge1, LocalDate.of(2025, 9, 1));
+
+        addChallengePost(m, challenge2, LocalDate.of(2025, 9, 1));
+        addChallengePost(m2, challenge2, LocalDate.of(2025, 9, 1));
+    }
+    private Challenge addChallenge(String title, String content, String image,ReviewStatus reviewStatus,
+                              ProgressStatus progressStatus, LocalDate startDate, LocalDate endDate,
+                              LocalDateTime createdAt, Member author) {
+        Challenge challenge = Challenge.builder()
+                .title(title)
+                .content(content)
+                .image(image)
+                .reviewStatus(reviewStatus)
+                .progressStatus(progressStatus)
+                .startDate(startDate)
+                .endDate(endDate)
+                .createdAt(createdAt)
+                .author(author)
+                .build();
+
         Category category1 = categoryRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
         Category category2 = categoryRepository.findById(2L)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-
-        Challenge challenge = Challenge.builder()
-                .title("첫 번째 챌린지")
-                .content("매일 20분 명상하기")
-                .image("https://example.com/image2.png")
-                .reviewStatus(ReviewStatus.APPROVED)
-                .progressStatus(ProgressStatus.ONGOING)
-                .startDate(LocalDate.of(2025, 9, 1))
-                .endDate(LocalDate.of(2025, 9, 8))
-                .createdAt(LocalDateTime.of(2025, 8, 31, 12, 0,1))
-                .author(m)
-                .build();
 
         ChallengeCategory cc1 = ChallengeCategory.builder()
                 .challenge(challenge)
@@ -78,5 +102,19 @@ public class DevTestMemberInit implements CommandLineRunner {
         List<ChallengeCategory> categories1 = List.of(cc1, cc2);
         challenge.setCategories(categories1);
         challengeRepository.save(challenge);
+
+        return challenge;
+    }
+
+    public void addChallengePost(Member author, Challenge challenge, LocalDate createDate) {
+        ChallengePost challengePost = ChallengePost.builder()
+                .author(author)
+                .challenge(challenge)
+                .build();
+
+        ChallengePostImage challengePostImage = ChallengePostImage.of(challengePost,"\"https://example.com/image2.png\"");
+        List<ChallengePostImage> images = List.of(challengePostImage);
+        challengePost.setImages(images);
+        challengePostRepository.save(challengePost);
     }
 }

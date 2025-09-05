@@ -16,6 +16,7 @@ public interface ChallengeService {
     ApiResponse<List<ChallengeResponse>> getChallengesByProgressStatus(ProgressStatus progressStatus);
     ApiResponse<List<ChallengeResponse>> getChallengesByCategory(Long categoryId);
     ApiResponse<ChallengeResponse> getChallenge(Long challengeId);
+    ApiResponse<List<ChallengeResponse>> getOngoingChallengesOrderByParticipants();
     void pendingChallenge(Long challengeId);
     void approveChallenge(Long challengeId);
     void rejectChallenge(Long challengeId);

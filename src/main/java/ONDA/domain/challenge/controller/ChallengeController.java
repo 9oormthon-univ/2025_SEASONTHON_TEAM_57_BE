@@ -74,6 +74,13 @@ public class ChallengeController {
         return ResponseEntity.status(200).body(response);
     }
 
+    @Operation(summary = "지금 HOT한 챌린지 조회", description = "참여자 수를 기반으로 챌린지 목록을 조회합니다")
+    @GetMapping("/popular")
+    public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getPopularChallenges() {
+        ApiResponse<List<ChallengeResponse>> response = challengeService.getOngoingChallengesOrderByParticipants();
+        return ResponseEntity.status(200).body(response);
+    }
+
     @Operation(summary = "챌린지 리스트 심사 카테고리별 조회", description = "심사 카테고리별 챌린지를 조회합니다")
     @GetMapping("/review")
     public ResponseEntity<ApiResponse<List<ChallengeResponse>>> getChallengesByReviewStatus(
