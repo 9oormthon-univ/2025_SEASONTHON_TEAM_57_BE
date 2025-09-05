@@ -2,8 +2,9 @@ package ONDA.domain.challenge.controller;
 
 import ONDA.domain.challenge.dto.ChallengePostRequest;
 import ONDA.domain.challenge.dto.ChallengePostResponse;
-import ONDA.domain.challenge.dto.ChallengeResponse;
+import ONDA.domain.challenge.dto.VoteResultResponse;
 import ONDA.domain.challenge.service.inf.ChallengePostService;
+import ONDA.domain.challenge.service.inf.ChallengeVoteService;
 import ONDA.domain.member.dto.MemberResponse;
 import ONDA.global.response.ApiResponse;
 import ONDA.global.response.ResponseCode;
@@ -22,6 +23,7 @@ import java.util.List;
 @Tag(name = "ChallengePost", description = "챌린지 인증글 API")
 public class ChallengePostController {
     private final ChallengePostService challengePostService;
+    private final ChallengeVoteService challengeVoteService;
 
     @Operation(summary = "챌린지 인증글 생성", description = "진행중인 챌린지 인증글 하나를 생성합니다")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "챌린지 인증글 생성 성공")
@@ -52,7 +54,7 @@ public class ChallengePostController {
     @GetMapping("/{challengeId}/participants")
     public ResponseEntity<ApiResponse<List<MemberResponse>>> getChallengeParticipants(
             @PathVariable("challengeId") Long challengeId) {
-        return ResponseEntity.ok(challengePostService.getChallengeParticipants(challengeId));
+        return ResponseEntity.status(200).body(challengePostService.getChallengeParticipants(challengeId));
     }
 
     @Operation(summary = "특정 챌린지 참여자의 인증글 목록 조회",
@@ -65,7 +67,27 @@ public class ChallengePostController {
         ApiResponse<List<ChallengePostResponse>> response =
                 challengePostService.getPostsByChallengeAndMember(challengeId, memberId);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @Operation(summary = "특정 챌린지 참여자 투표",
+            description = "해당 챌린지에서 특정 참여자를 투표합니다.")
+    @PostMapping("/{challengeId}/vote/{participantId}")
+    public ResponseEntity<ApiResponse<Void>> voteForParticipant(@AuthenticationPrincipal Long voterId,
+                                                @PathVariable("challengeId") Long challengeId,
+                                                @PathVariable("participantId") Long participantId) {
+
+        challengeVoteService.voteForParticipant(voterId, challengeId, participantId);
+        return ResponseEntity.status(201).body(ApiResponse.success(ResponseCode.CREATED, null));
+    }
+
+    @GetMapping("/{challengeId}/votes")
+    public ResponseEntity<ApiResponse<List<VoteResultResponse>>> getVoteResults(@PathVariable("challengeId") Long challengeId) {
+
+        ApiResponse<List<VoteResultResponse>> response =
+                challengeVoteService.getVoteResults(challengeId);
+
+        return ResponseEntity.status(200).body(response);
     }
 
 }
