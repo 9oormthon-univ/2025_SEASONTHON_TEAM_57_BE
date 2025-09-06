@@ -1,5 +1,6 @@
 package ONDA.domain.challenge.service.inf;
 
+import ONDA.domain.challenge.dto.ChallengePostCalendarResponse;
 import ONDA.domain.challenge.dto.ChallengePostRequest;
 import ONDA.domain.challenge.dto.ChallengePostResponse;
 import ONDA.domain.challenge.dto.ChallengeResponse;
@@ -14,6 +15,7 @@ public interface ChallengePostService {
     ApiResponse<ChallengePostResponse> getChallengePost(Long challengePostId);
     ApiResponse<List<ChallengePostResponse>> getMyChallengePostsByChallenge(Long memberId, Long challengeId);
     ApiResponse<List<ChallengePostResponse>> getPostsByChallengeAndMember(Long challengeId, Long memberId);
-    ApiResponse<List<ChallengePostResponse>> getMyChallengePostsByDate(Long memberId, LocalDate targetDate);
+    //ApiResponse<List<ChallengePostResponse>> getMyChallengePostsByDate(Long memberId, LocalDate targetDate);
     ApiResponse<List<MemberResponse>> getChallengeParticipants(Long challengeId);
+    ApiResponse<ChallengePostCalendarResponse> getMyChallengePostsByMonth(Long memberId, int year, int month);
 }
