@@ -40,6 +40,11 @@ public interface ChallengeRepository extends JpaRepository<Challenge,Long> {
             "WHERE p.author = :member ORDER BY p.challenge.id DESC")
     List<Challenge> findChallengesByParticipantOrderByChallengeIdDesc(@Param("member") Member member);
 
+    @Query("SELECT DISTINCT p.challenge " +
+            "FROM ChallengePost p " +
+            "WHERE p.author = :member AND p.challenge.progressStatus = :progressStatus")
+    List<Challenge> findByAuthorAndProgressStatus(@Param("member") Member member, @Param("progressStatus") ProgressStatus progressStatus);
+
     @Query("SELECT c FROM Challenge c WHERE c.endDate = :endDate")
     List<Challenge> findByEndDate(@Param("endDate") LocalDate endDate);
 }

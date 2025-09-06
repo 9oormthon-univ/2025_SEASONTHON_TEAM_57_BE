@@ -2,6 +2,7 @@ package ONDA.domain.challenge.repository;
 
 import ONDA.domain.challenge.entity.Challenge;
 import ONDA.domain.challenge.entity.ChallengePost;
+import ONDA.domain.challenge.entity.ProgressStatus;
 import ONDA.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,4 @@ public interface ChallengePostRepository extends JpaRepository<ChallengePost,Lon
     List<ChallengePost> findByAuthorAndCreateDate(Member member, LocalDate targetDate);
     @Query("SELECT DISTINCT p.author FROM ChallengePost p WHERE p.challenge.id = :challengeId")
     List<Member> findDistinctAuthorsByChallengeId(@Param("challengeId") Long challengeId);
-
-    List<ChallengePost> findByChallenge(Challenge challenge);
 }
