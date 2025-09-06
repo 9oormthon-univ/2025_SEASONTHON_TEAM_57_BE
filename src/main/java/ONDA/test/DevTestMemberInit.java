@@ -125,9 +125,9 @@ public class DevTestMemberInit implements CommandLineRunner {
                 .createDate(createDate)
                 .build();
 
-        ChallengePostImage challengePostImage = ChallengePostImage.of(challengePost,"https://example.com/image2.png");
-        List<ChallengePostImage> images = List.of(challengePostImage);
-        challengePost.setImages(images);
+//        ChallengePostImage challengePostImage = ChallengePostImage.of(challengePost,"https://example.com/image2.png");
+//        List<ChallengePostImage> images = List.of(challengePostImage);
+//        challengePost.setImages(images);
         challengePostRepository.save(challengePost);
     }
 

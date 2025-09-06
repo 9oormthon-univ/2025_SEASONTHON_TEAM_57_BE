@@ -1,6 +1,8 @@
 package ONDA.global.media.service;
 
 import ONDA.domain.challenge.entity.Challenge;
+import ONDA.domain.challenge.entity.ChallengePost;
+import ONDA.domain.challenge.repository.ChallengePostRepository;
 import ONDA.domain.challenge.repository.ChallengeRepository;
 import ONDA.domain.member.entity.Member;
 import ONDA.domain.talent.post.entity.TalentPost;
@@ -9,9 +11,11 @@ import ONDA.domain.talent.post.service.TalentPostService;
 import ONDA.global.exception.BusinessException;
 import ONDA.global.exception.ErrorCode;
 import ONDA.global.media.entity.ChallengeImage;
+import ONDA.global.media.entity.ChallengePostImage;
 import ONDA.global.media.entity.ImageUsageType;
 import ONDA.global.media.entity.PostImage;
 import ONDA.global.media.repository.ChallengeImageRepository;
+import ONDA.global.media.repository.ChallengePostImageRepository;
 import ONDA.global.media.repository.UploadedImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +42,8 @@ public class MediaService {
     private final ChallengeImageRepository challengeImageRepository;
     private final TalentPostRepository talentPostRepository;
     private final ChallengeRepository challengeRepository;
+    private final ChallengePostImageRepository challengePostImageRepository;
+    private final ChallengePostRepository challengePostRepository;
 
     @Value("${app.backend-base-url}")
     private String backUrl;
@@ -63,12 +69,26 @@ public class MediaService {
                 return uploadTalentPostImage(fileName, uploader, referenceId);
             case CHALLENGE_IMAGE:
                 return uploadChallengeImage(fileName, uploader, referenceId);
-            case PROFILE_IMAGE:
-                // 프로필 이미지 처리 로직 (기존과 동일)
-                return uploadTalentPostImage(fileName, uploader, referenceId); // 임시로 PostImage 사용
+            case CHALLENGE_POST_IMAGE:
+                return uploadChallengePostImage(fileName, uploader, referenceId);
             default:
                 throw new BusinessException(ErrorCode.INVALID_IMAGE_USAGE_TYPE);
         }
+    }
+
+    private ChallengePostImage uploadChallengePostImage(String fileName, Member uploader, Long postId) {
+        ChallengePost post = challengePostRepository.findById(postId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+
+
+        ChallengePostImage postImage = ChallengePostImage.builder()
+                .imageUrl(getImageUrl(fileName))
+                .uploader(uploader)
+                .challengePost(post)
+                .build();
+
+
+        return challengePostImageRepository.save(postImage);
     }
 
     private PostImage uploadTalentPostImage(String fileName, Member uploader, Long postId) {
