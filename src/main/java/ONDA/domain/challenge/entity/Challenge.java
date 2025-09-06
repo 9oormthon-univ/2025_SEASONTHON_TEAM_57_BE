@@ -30,7 +30,8 @@ public class Challenge {
 
     private String content;
 
-    private String image;
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChallengeImage> images = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private ReviewStatus reviewStatus;

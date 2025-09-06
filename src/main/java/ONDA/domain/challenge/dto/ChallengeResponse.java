@@ -5,6 +5,7 @@ import ONDA.domain.challenge.entity.ChallengeCategory;
 import ONDA.domain.talent.post.dto.TalentPostResponse;
 import ONDA.domain.talent.post.entity.TalentPost;
 import ONDA.global.media.dto.ImageUploadResponse;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,6 +21,9 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChallengeResponse {
+    @Schema(description = "챌린지 ID", example = "1")
+    private Long challengeId;
+
     @Schema(description = "작성자", example = "홍길동")
     private String author;
 
@@ -66,6 +70,11 @@ public class ChallengeResponse {
         this.startDate = challenge.getStartDate();
         this.endDate = challenge.getEndDate();
         this.createdAt = challenge.getCreatedAt();
+
+        List<ChallengeImage> postImages = challenge.getImages();
+        for(ChallengeImage challengeImage : postImages){
+            images.add(challengeImage.getUrl());
+        }
 
         List<ChallengeCategory> categories = challenge.getCategories();
         for(ChallengeCategory challengeCategory : categories){

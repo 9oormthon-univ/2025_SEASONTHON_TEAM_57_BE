@@ -87,7 +87,6 @@ public class DevTestMemberInit implements CommandLineRunner {
         Challenge challenge = Challenge.builder()
                 .title(title)
                 .content(content)
-                .image(image)
                 .reviewStatus(reviewStatus)
                 .progressStatus(progressStatus)
                 .startDate(startDate)
@@ -95,6 +94,11 @@ public class DevTestMemberInit implements CommandLineRunner {
                 .createdAt(createdAt)
                 .author(author)
                 .build();
+
+        ChallengeImage challengeImage = ChallengeImage.of(challenge,"https://example.com/image2.png");
+        List<ChallengeImage> images = List.of(challengeImage);
+        challenge.setImages(images);
+
 
         Category category1 = categoryRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));

@@ -24,4 +24,11 @@ public interface ChallengePostRepository extends JpaRepository<ChallengePost,Lon
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+    @Query("SELECT COUNT(p) > 0 FROM ChallengePost p " +
+            "WHERE p.author.id = :memberId " +
+            "AND p.challenge.id = :challengeId " +
+            "AND p.createDate = :today")
+    boolean existsByMemberAndChallengeAndDate(@Param("memberId") Long memberId,
+                                              @Param("challengeId") Long challengeId,
+                                              @Param("today") LocalDate today);
 }

@@ -23,11 +23,13 @@ public class ChallengePostResponse {
     @Schema(description = "챌린지 제목", example = "영어 7일 챌린지")
     private String title;
 
+
     @Schema(description = "챌린지 인증 글 이미지들")
     private List<ImageUploadResponse> images;
 
 //    @Schema(description = "이미지", example = "[\"https://example.com/image1.png\",\"https://example.com/image2.png\"]")
 //    private List<String> images = new ArrayList<>();
+
 
     @Schema(description = "챌린지 인증날짜", example = "2025-09-08")
     private LocalDate createDate;
