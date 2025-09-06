@@ -42,7 +42,7 @@ public class MediaController {
 
     @PostMapping("/upload")
     @Operation(summary = "다중 이미지 업로드", description = "여러 이미지 파일을 한번에 업로드합니다.")
-    public ApiResponse<List<ImageUploadResponse>> uploadMultipleImages(
+    public ApiResponse<Void> uploadMultipleImages(
             @Parameter(description = "업로드할 이미지 파일들 (최대 5개)") @RequestParam("files") MultipartFile[] files,
             @Parameter(description = "이미지 사용 타입") @RequestParam("usageType") ImageUsageType usageType,
             @Parameter(description = "참조 엔티티 ID)") @RequestParam(value = "referenceId") Long referenceId,
@@ -51,17 +51,17 @@ public class MediaController {
         Member member = memberService.findById(memberId);
         List<MultipartFile> fileList = Arrays.asList(files);
         
-        List<PostImage> postImages = mediaService.uploadImages(fileList, member, usageType, referenceId);
+        List<Object> uploadedImages = mediaService.uploadImages(fileList, member, usageType, referenceId);
 
 
-        List<ImageUploadResponse> responses = postImages.stream()
-                .map(uploadedImage -> ImageUploadResponse.builder()
-                        .imageId(uploadedImage.getId())
-                        .imageUrl(mediaService.getImageUrl(uploadedImage.getImageUrl()))
-                        .build())
-                .toList();
-        
-        return ApiResponse.success(ResponseCode.SUCCESS, responses);
+//        List<ImageUploadResponse> responses = postImages.stream()
+//                .map(uploadedImage -> ImageUploadResponse.builder()
+//                        .imageId(uploadedImage.getId())
+//                        .imageUrl(mediaService.getImageUrl(uploadedImage.getImageUrl()))
+//                        .build())
+//                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, null);
     }
 
     @GetMapping("/images/{imageName}")

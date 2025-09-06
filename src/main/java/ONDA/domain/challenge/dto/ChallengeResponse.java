@@ -2,6 +2,9 @@ package ONDA.domain.challenge.dto;
 
 import ONDA.domain.challenge.entity.Challenge;
 import ONDA.domain.challenge.entity.ChallengeCategory;
+import ONDA.domain.talent.post.dto.TalentPostResponse;
+import ONDA.domain.talent.post.entity.TalentPost;
+import ONDA.global.media.dto.ImageUploadResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,9 +29,6 @@ public class ChallengeResponse {
     @Schema(description = "챌린지 내용", example = "하루에 영어 단어 10개씩 외우기")
     private String content;
 
-    @Schema(description = "이미지 url", example = "https://example.com/image2.png")
-    private String image;
-
     @Schema(description = "심사 상태", example = "PENDING/APPROVED/REJECTED")
     private String reviewStatus;
 
@@ -48,11 +48,19 @@ public class ChallengeResponse {
     @Schema(description = "챌린지 카테고리", example = "외국어 · 번역 · 통역")
     private List<String> challengeCategories = new ArrayList<>();
 
+    @Schema(description = "재능 공유 글 이미지들")
+    private List<ImageUploadResponse> images;
+
     public ChallengeResponse(Challenge challenge) {
         this.author = challenge.getAuthor().getNickname();
         this.title = challenge.getTitle();
         this.content = challenge.getContent();
-        this.image = challenge.getImage();
+        this.images = challenge.getImages().stream()
+                .map(im -> ImageUploadResponse.builder()
+                        .imageId(im.getId())
+                        .imageUrl(im.getImageUrl())
+                        .build())
+                .toList();
         this.reviewStatus = challenge.getReviewStatus().getDisplayName();
         this.progressStatus = challenge.getProgressStatus().getDisplayName();
         this.startDate = challenge.getStartDate();
