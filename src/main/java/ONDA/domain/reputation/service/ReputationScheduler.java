@@ -22,7 +22,7 @@ public class ReputationScheduler {
     @Transactional
     public void processFinishedChallenges() {
         LocalDate today = LocalDate.now();
-        LocalDate endDate = today.minusDays(7);
+        LocalDate endDate = today.minusDays(8);
 
         List<Challenge> challenges = challengeRepository.findByEndDate(endDate);
 
