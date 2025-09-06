@@ -17,6 +17,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -40,7 +41,8 @@ public class SecurityConfig {
                 "/api/v1/test/**",
                 "/api/v1/auth/**",
                 "/swagger-ui/**",
-                "/v3/api-docs/**"
+                "/v3/api-docs/**",
+                "/api/media/images/**"
         );
         http
             .csrf(AbstractHttpConfigurer::disable)
@@ -61,9 +63,16 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        //인증 필요 목록
                         .requestMatchers(HttpMethod.GET, "/api/talent-posts/my").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/talent-posts/recommended").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/api/challenges/review").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/challenges/my*").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/api/challenges/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/talent-posts/**").permitAll()
+
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(entryPoint)

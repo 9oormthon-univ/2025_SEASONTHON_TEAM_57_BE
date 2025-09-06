@@ -133,14 +133,15 @@ public class MediaService {
 
     private String saveFile(MultipartFile file, String fileName) {
         try {
-            Path uploadPath = Paths.get(uploadDir);
+            Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+            //Path uploadPath = Paths.get(uploadDir);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
-            
+
             Path filePath = uploadPath.resolve(fileName);
             file.transferTo(filePath.toFile());
-            
+
             return filePath.toString();
         } catch (IOException e) {
             log.error("파일 저장 실패: {}", fileName, e);

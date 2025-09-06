@@ -11,6 +11,7 @@ import ONDA.global.media.entity.UploadedImage;
 import ONDA.global.media.service.MediaService;
 import ONDA.global.response.ApiResponse;
 import ONDA.global.response.ResponseCode;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,7 +61,7 @@ public class MediaController {
     }
 
     @PostMapping("/upload/multiple")
-    @Operation(summary = "다중 이미지 업로드", description = "여러 이미지 파일을 한번에 업로드합니다. (최대 5개)")
+    @Operation(summary = "다중 이미지 업로드", description = "여러 이미지 파일을 한번에 업로드합니다.")
     public ApiResponse<List<ImageUploadResponse>> uploadMultipleImages(
             @Parameter(description = "업로드할 이미지 파일들") @RequestParam("files") MultipartFile[] files,
             @Parameter(description = "이미지 사용 타입") @RequestParam("usageType") ImageUsageType usageType,
@@ -71,7 +72,6 @@ public class MediaController {
         List<MultipartFile> fileList = Arrays.asList(files);
         
         List<UploadedImage> uploadedImages = mediaService.uploadImages(fileList, member, usageType, referenceId);
-        
         List<ImageUploadResponse> responses = uploadedImages.stream()
                 .map(uploadedImage -> ImageUploadResponse.builder()
                         .imageId(uploadedImage.getId())
