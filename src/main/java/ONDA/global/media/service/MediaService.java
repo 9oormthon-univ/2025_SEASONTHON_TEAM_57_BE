@@ -1,6 +1,8 @@
 package ONDA.global.media.service;
 
 import ONDA.domain.member.entity.Member;
+import ONDA.domain.member.service.MemberService;
+import ONDA.domain.talent.post.service.TalentPostService;
 import ONDA.global.exception.BusinessException;
 import ONDA.global.exception.ErrorCode;
 import ONDA.global.media.entity.ImageUsageType;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,6 +30,10 @@ import java.util.UUID;
 public class MediaService {
 
     private final UploadedImageRepository uploadedImageRepository;
+    private final MemberService memberService;
+
+    @Value("${app.backend-base-url}")
+    private String backUrl;
 
     @Value("${app.upload.dir:uploads}")
     private String uploadDir;
@@ -47,12 +52,11 @@ public class MediaService {
         String filePath = saveFile(file, fileName);
         
         UploadedImage uploadedImage = UploadedImage.builder()
-                .imageName(fileName)
+                .imageUrl(fileName)
                 .uploader(uploader)
                 .usageType(usageType)
-                //.referenceId(referenceId)
+                .referenceId(referenceId)
                 .build();
-        
         return uploadedImageRepository.save(uploadedImage);
     }
 
@@ -60,7 +64,13 @@ public class MediaService {
     public List<UploadedImage> uploadImages(List<MultipartFile> files, Member uploader, 
                                           ImageUsageType usageType, Long referenceId) {
         if (files.size() > 5) {
+
             throw new BusinessException(ErrorCode.TOO_MANY_FILES);
+        }
+
+        //프로필은 1개만 가능
+        if (ImageUsageType.PROFILE_IMAGE == usageType && files.size() != 1) {
+            throw new BusinessException(ErrorCode.PROFILE_IMAGE_SINGLE_REQUIRED);
         }
         
         return files.stream()
@@ -69,7 +79,7 @@ public class MediaService {
     }
 
     public String getImageUrl(String imageName) {
-        return "/api/media/images/" + imageName;
+        return backUrl + "/api/media/images/" + imageName;
     }
 
     public byte[] getImageBytes(String imageName) {
@@ -94,7 +104,7 @@ public class MediaService {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
         
-        deleteFileFromStorage(image.getImageName());
+        deleteFileFromStorage(image.getImageUrl());
         uploadedImageRepository.delete(image);
     }
 

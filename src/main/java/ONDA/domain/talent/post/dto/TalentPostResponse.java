@@ -3,15 +3,19 @@ package ONDA.domain.talent.post.dto;
 import ONDA.domain.talent.post.entity.PostStatus;
 import ONDA.domain.talent.post.entity.PostType;
 import ONDA.domain.talent.post.entity.TalentPost;
+import ONDA.global.media.dto.ImageUploadResponse;
+import ONDA.global.media.entity.UploadedImage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Builder
+@Slf4j
 @Schema(description = "재능공유 게시글 응답")
 public class TalentPostResponse {
     
@@ -45,9 +49,12 @@ public class TalentPostResponse {
     @Schema(description = "카테고리 목록")
     private List<CategoryResponse> categories;
 
-    @Schema(description = "가격")
+    @Schema(description = "가격", example = "10000")
     private int price;
-    
+
+    @Schema(description = "재능 공유 글 이미지들")
+    private List<ImageUploadResponse> images;
+
     @Getter
     @Builder
     public static class CategoryResponse {
@@ -60,8 +67,24 @@ public class TalentPostResponse {
         @Schema(description = "카테고리 타입", example = "teach")
         private PostType type;
     }
-    
+
+    public static TalentPostResponse from(TalentPost post, List<UploadedImage> images) {
+        return baseBuilder(post)
+                .images(images.stream()
+                        .map(im -> ImageUploadResponse.builder()
+                                .imageId(im.getId())
+                                .imageUrl(im.getImageUrl())
+                                .build())
+                        .toList())
+                .build();
+    }
+
     public static TalentPostResponse from(TalentPost post) {
+        return baseBuilder(post)
+                .build();
+    }
+
+    private static TalentPostResponse.TalentPostResponseBuilder baseBuilder(TalentPost post) {
         return TalentPostResponse.builder()
                 .id(post.getId())
                 .authorId(post.getAuthor().getId())
@@ -79,7 +102,6 @@ public class TalentPostResponse {
                                 .type(pc.getType())
                                 .build())
                         .toList())
-                .price(post.getPrice())
-                .build();
+                .price(post.getPrice());
     }
 }

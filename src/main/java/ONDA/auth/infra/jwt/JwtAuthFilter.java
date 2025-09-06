@@ -42,10 +42,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         boolean isGet = "GET".equalsIgnoreCase(method);
 
         return isGet && (
-                !m.match("/api/talent-posts/my", uri) ||
-                        !m.match("/api/talent-posts/recommended", uri) ||
-                        !m.match("/api/talent-posts/my", uri) ||
-                        !m.match("/api/challenges/review", uri) ||
+                !m.match("/api/talent-posts/my", uri) &&
+                        !m.match("/api/talent-posts/recommended", uri) &&
+                        !m.match("/api/challenges/review", uri) &&
                         !m.match("/api/challenges/my*", uri));
     }
 
@@ -60,7 +59,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                 Authentication auth = createAuthentication(claims);
                 SecurityContextHolder.getContext().setAuthentication(auth);
-
             } catch (ExpiredJwtException e) {
                 //throw new JwtAuthenticationException("토큰 만료", e);
                 throw new IllegalArgumentException();

@@ -2,6 +2,7 @@ package ONDA.domain.talent.post.entity;
 
 import ONDA.domain.member.entity.Member;
 import ONDA.domain.talent.comment.entity.Comment;
+import ONDA.global.media.entity.UploadedImage;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -46,6 +47,9 @@ public class TalentPost {
     private List<PostCategory> categories = new ArrayList<>();
 
     private int price;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UploadedImage> images = new ArrayList<>();
 
     @Builder
     public TalentPost(Member author, PostType type, String title, String content,int price) {

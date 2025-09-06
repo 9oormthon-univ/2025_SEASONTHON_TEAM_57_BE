@@ -14,7 +14,11 @@ import ONDA.global.category.CategoryRepository;
 import ONDA.global.exception.BusinessException;
 import ONDA.global.exception.ErrorCode;
 import ONDA.global.exception.NotFoundMemberException;
+import ONDA.global.media.entity.ImageUsageType;
+import ONDA.global.media.entity.UploadedImage;
+import ONDA.global.media.repository.UploadedImageRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +34,7 @@ public class TalentPostService {
     private final TalentPostRepository talentPostRepository;
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
+    private final UploadedImageRepository uploadedImageRepository;
 
     @Transactional
     public TalentPostResponse create(Long memberId, TalentPostCreateRequest request) {
@@ -57,13 +62,13 @@ public class TalentPostService {
         TalentPost post = talentPostRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
 
-        return TalentPostResponse.from(post);
+        return TalentPostResponse.from(post, getImages(postId));
     }
 
     public List<TalentPostResponse> getByCategory(Long categoryId) {
         List<TalentPost> posts = talentPostRepository.findByCategoryId(categoryId);
         return posts.stream()
-                .map(TalentPostResponse::from)
+                .map(post -> TalentPostResponse.from(post, getImages(post.getId())))
                 .toList();
     }
 
@@ -72,7 +77,7 @@ public class TalentPostService {
 
         return hotPosts.stream()
                 .limit(10)
-                .map(TalentPostResponse::from)
+                .map(post -> TalentPostResponse.from(post, getImages(post.getId())))
                 .toList();
     }
 
@@ -85,7 +90,7 @@ public class TalentPostService {
         List<TalentPost> recommendedPosts = talentPostRepository.findAll(pageRequest).getContent();
 
         return recommendedPosts.stream()
-                .map(TalentPostResponse::from)
+                .map(post -> TalentPostResponse.from(post, getImages(post.getId())))
                 .toList();
     }
 
@@ -129,7 +134,7 @@ public class TalentPostService {
     public List<TalentPostResponse> getMyPosts(Long memberId) {
         List<TalentPost> myPosts = talentPostRepository.findByAuthorId(memberId);
         return myPosts.stream()
-                .map(TalentPostResponse::from)
+                .map(post -> TalentPostResponse.from(post, getImages(post.getId())))
                 .toList();
     }
 
@@ -163,7 +168,11 @@ public class TalentPostService {
         return postCategories;
     }
 
-    public void uploadImages() {
+    @Transactional
+    public void uploadImages(UploadedImage uploadedImage, Long referenceId) {
+        TalentPost talentPost = talentPostRepository.findById(referenceId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+        talentPost.getImages().add(uploadedImage);
     }
 
     public List<TalentPostResponse> getAll() {
@@ -172,5 +181,9 @@ public class TalentPostService {
                 .limit(20)
                 .map(TalentPostResponse::from)
                 .toList();
+    }
+
+    public List<UploadedImage> getImages(Long postId) {
+        return uploadedImageRepository.findByUsageTypeAndReferenceId(ImageUsageType.TALENT_POST_IMAGE, postId);
     }
 }
