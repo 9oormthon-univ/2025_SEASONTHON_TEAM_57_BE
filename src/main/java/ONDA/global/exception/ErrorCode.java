@@ -36,7 +36,8 @@ public enum ErrorCode {
     PARENT_NOT_FOUND("PARENT-404", "존재하지 않는 부모 댓글입니다.(대댓글 전용)"),
     COMMENT_POST_MISMATCH("COMMENT_MISMATCH", "대댓글을 달기 위한 댓글이 해당글에 소속되어있지 않음"),
 
-    NOT_REPUTATION_FOUND("REPUTATION-404", "명성을 찾을 수 없습니다.");
+    NOT_REPUTATION_FOUND("REPUTATION-404", "명성을 찾을 수 없습니다."),
+    NOT_CATEGORY_FOUND("CATEGORY-404", "카테고리를 찾을 수 없습니다.");
 
     private final String code;
     private final String message;

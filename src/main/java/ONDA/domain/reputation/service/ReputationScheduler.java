@@ -18,7 +18,7 @@ public class ReputationScheduler {
     private final ChallengeRepository challengeRepository;
     private final ReputationService reputationService;
 
-    @Scheduled(cron = "*/1 * * * * ?") // 매일 자정
+    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정 실행
     @Transactional
     public void processFinishedChallenges() {
         LocalDate today = LocalDate.now();

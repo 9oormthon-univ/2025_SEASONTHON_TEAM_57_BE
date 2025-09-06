@@ -1,21 +1,27 @@
 package ONDA.domain.reputation.service.impl;
 
+import ONDA.domain.challenge.dto.ChallengeResponse;
 import ONDA.domain.challenge.dto.VoteResultResponse;
 import ONDA.domain.challenge.entity.Challenge;
 import ONDA.domain.challenge.entity.ChallengeCategory;
 import ONDA.domain.challenge.entity.ChallengePost;
+import ONDA.domain.challenge.entity.ReviewStatus;
 import ONDA.domain.challenge.repository.ChallengePostRepository;
 import ONDA.domain.challenge.repository.ChallengeRepository;
 import ONDA.domain.challenge.repository.ChallengeVoteRepository;
 import ONDA.domain.member.entity.Member;
 import ONDA.domain.member.repository.MemberRepository;
+import ONDA.domain.reputation.dto.ReputationResponse;
 import ONDA.domain.reputation.entity.Reputation;
 import ONDA.domain.reputation.repository.ReputationRepository;
 import ONDA.domain.reputation.service.inf.ReputationService;
 import ONDA.global.category.Category;
+import ONDA.global.category.CategoryRepository;
 import ONDA.global.exception.BusinessException;
 import ONDA.global.exception.ErrorCode;
 import ONDA.global.exception.NotFoundMemberException;
+import ONDA.global.response.ApiResponse;
+import ONDA.global.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +39,7 @@ public class ReputationServiceImpl implements ReputationService {
     private final ChallengePostRepository challengePostRepository;
     private final ChallengeVoteRepository challengeVoteRepository;
     private final MemberRepository memberRepository;
+    private final CategoryRepository categoryRepository;
 
     public void assignReputationScores(Long challengeId) {
         Challenge challenge = challengeRepository.findById(challengeId)
@@ -70,6 +77,7 @@ public class ReputationServiceImpl implements ReputationService {
             else if (i == 1) points = 35; // 2등
             else if (i == 2) points = 20; // 3등
             else points = 10;             // 기타 참여자
+            //25,20,15,10
 
             // 카테고리별 점수 누적
             for (ChallengeCategory cc : challenge.getCategories()) {
@@ -90,4 +98,20 @@ public class ReputationServiceImpl implements ReputationService {
         }
     }
 
+    @Override
+    public ApiResponse<List<ReputationResponse>> getReputationByCategory(Long memberId, Long categoryId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.NOT_CATEGORY_FOUND));
+
+        List<ReputationResponse> reputations = reputationRepository
+                .findReputationByMemberAndCategory(member, category).stream()
+                .map(ReputationResponse::new)
+                .toList();
+
+        return ApiResponse.success(ResponseCode.SUCCESS, reputations);
+    }
 }
