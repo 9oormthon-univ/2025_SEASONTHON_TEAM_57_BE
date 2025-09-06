@@ -51,7 +51,7 @@ public class MediaController {
         Member member = memberService.findById(memberId);
         List<MultipartFile> fileList = Arrays.asList(files);
         
-        List<PostImage> postImages = mediaService.uploadImages(fileList, member, usageType, referenceId);
+        List<Object> uploadedImages = mediaService.uploadImages(fileList, member, usageType, referenceId);
 
 
 //        List<ImageUploadResponse> responses = postImages.stream()
