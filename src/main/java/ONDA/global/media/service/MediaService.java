@@ -31,7 +31,7 @@ import java.util.UUID;
 public class MediaService {
 
     private final UploadedImageRepository uploadedImageRepository;
-    private final TalentPostService talentPostService;
+    private final TalentPostRepository talentPostRepository;
 
     @Value("${app.backend-base-url}")
     private String backUrl;
@@ -52,7 +52,8 @@ public class MediaService {
         String fileName = generateFileName(file);
         String filePath = saveFile(file, fileName);
 
-        TalentPost post = talentPostService.getPostById(postId);
+        TalentPost post = talentPostRepository.findById(postId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
 
         PostImage postImage = PostImage.builder()
                 .imageUrl(fileName)
@@ -103,13 +104,14 @@ public class MediaService {
 
     @Transactional
     public void deleteImage(Long imageId, Member member) {
+        log.info("============{}==============", imageId);
         PostImage image = uploadedImageRepository.findById(imageId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.IMAGE_NOT_FOUND));
         
         if (!image.getUploader().getId().equals(member.getId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
-        
+
         deleteFileFromStorage(image.getImageUrl());
         uploadedImageRepository.delete(image);
     }

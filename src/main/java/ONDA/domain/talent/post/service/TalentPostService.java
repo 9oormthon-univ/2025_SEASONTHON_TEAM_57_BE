@@ -2,6 +2,7 @@ package ONDA.domain.talent.post.service;
 
 import ONDA.domain.member.entity.Member;
 import ONDA.domain.member.repository.MemberRepository;
+import ONDA.domain.member.service.MemberService;
 import ONDA.domain.talent.post.dto.TalentPostCreateRequest;
 import ONDA.domain.talent.post.dto.TalentPostResponse;
 import ONDA.domain.talent.post.dto.TalentPostUpdateRequest;
@@ -16,7 +17,9 @@ import ONDA.global.exception.ErrorCode;
 import ONDA.global.exception.NotFoundMemberException;
 import ONDA.global.media.entity.PostImage;
 import ONDA.global.media.repository.UploadedImageRepository;
+import ONDA.global.media.service.MediaService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +30,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class TalentPostService {
 
     private final TalentPostRepository talentPostRepository;
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
-    private final UploadedImageRepository uploadedImageRepository;
+    private final MediaService mediaService;
+    private final MemberService memberService;
 
     @Transactional
     public TalentPostResponse create(Long memberId, TalentPostCreateRequest request) {
@@ -121,8 +126,15 @@ public class TalentPostService {
         TalentPost post = talentPostRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
 
+        Member member = memberService.findById(memberId);
         if (!post.getAuthor().getId().equals(memberId)) {
             throw new BusinessException(ErrorCode.OWNER_MISMATCH);
+        }
+
+        List<PostImage> images = post.getImages();
+        for (PostImage image : images) {
+            Long imageId = image.getId();
+            mediaService.deleteImage(imageId, member);
         }
 
         talentPostRepository.delete(post);
@@ -171,10 +183,7 @@ public class TalentPostService {
         postImage.setPost(talentPost);
     }
 
-    public TalentPost getPostById(Long postId) {
-        return talentPostRepository.findById(postId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
-    }
+
     public List<TalentPostResponse> getAll() {
         List<TalentPost> posts = talentPostRepository.findAllByOrderByCreatedAtDesc();
         return posts.stream()
