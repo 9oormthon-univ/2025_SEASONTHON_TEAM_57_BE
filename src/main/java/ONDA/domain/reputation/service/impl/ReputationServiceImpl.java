@@ -1,11 +1,9 @@
 package ONDA.domain.reputation.service.impl;
 
-import ONDA.domain.challenge.dto.ChallengeResponse;
 import ONDA.domain.challenge.dto.VoteResultResponse;
 import ONDA.domain.challenge.entity.Challenge;
 import ONDA.domain.challenge.entity.ChallengeCategory;
 import ONDA.domain.challenge.entity.ChallengePost;
-import ONDA.domain.challenge.entity.ReviewStatus;
 import ONDA.domain.challenge.repository.ChallengePostRepository;
 import ONDA.domain.challenge.repository.ChallengeRepository;
 import ONDA.domain.challenge.repository.ChallengeVoteRepository;
@@ -28,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +33,6 @@ import java.util.Optional;
 public class ReputationServiceImpl implements ReputationService {
     private final ReputationRepository reputationRepository;
     private final ChallengeRepository challengeRepository;
-    private final ChallengePostRepository challengePostRepository;
     private final ChallengeVoteRepository challengeVoteRepository;
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
@@ -45,10 +41,6 @@ public class ReputationServiceImpl implements ReputationService {
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_CHALLENGE_FOUND));
 
-        // 1. 해당 챌린지 인증글 가져오기 (투표 수 포함)
-        List<ChallengePost> posts = challengePostRepository.findByChallenge(challenge);
-
-        // 2. 투표수 기준 정렬
         List<Member> participants = challenge.getChallengePosts().stream()
                 .map(ChallengePost::getAuthor)
                 .distinct()
@@ -65,21 +57,26 @@ public class ReputationServiceImpl implements ReputationService {
                 .sorted(Comparator.comparingLong(VoteResultResponse::getVoteCount).reversed())
                 .toList();
 
+        boolean isSmallChallenge = results.size() <= 3;
 
-        // 3. 순위 매기기 및 점수 부여
         for (int i = 0; i < results.size(); i++) {
             VoteResultResponse response = results.get(i);
             Member member = memberRepository.findById(response.getParticipantId())
                     .orElseThrow(NotFoundMemberException::new);
 
             int points;
-            if (i == 0) points = 50;     // 1등
-            else if (i == 1) points = 35; // 2등
-            else if (i == 2) points = 20; // 3등
-            else points = 10;             // 기타 참여자
-            //25,20,15,10
+            if (isSmallChallenge) {
+                if (i == 0) points = 25;
+                else if (i == 1) points = 20;
+                else if (i == 2) points = 15;
+                else points = 10;
+            } else {
+                if (i == 0) points = 50;
+                else if (i == 1) points = 35;
+                else if (i == 2) points = 20;
+                else points = 10;
+            }
 
-            // 카테고리별 점수 누적
             for (ChallengeCategory cc : challenge.getCategories()) {
                 Category category = cc.getCategory();
 
@@ -88,6 +85,7 @@ public class ReputationServiceImpl implements ReputationService {
                             Reputation newRep = Reputation.builder()
                                     .member(member)
                                     .category(category)
+                                    .score(0)
                                     .build();
                             return reputationRepository.save(newRep);
                         });
