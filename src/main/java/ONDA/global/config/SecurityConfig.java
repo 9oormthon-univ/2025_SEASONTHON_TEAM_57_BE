@@ -70,6 +70,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/challenges/review").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/challenges/my*").authenticated()
 
+                        .requestMatchers(HttpMethod.GET, "/api/profile/**").authenticated()
+
                         .requestMatchers(HttpMethod.GET, "/api/challenges/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/talent-posts/**").permitAll()
 

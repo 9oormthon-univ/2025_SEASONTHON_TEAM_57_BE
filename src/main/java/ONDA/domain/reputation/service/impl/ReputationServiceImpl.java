@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class ReputationServiceImpl implements ReputationService {
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
 
+    @Override
     public void assignReputationScores(Long challengeId) {
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_CHALLENGE_FOUND));
@@ -80,7 +82,7 @@ public class ReputationServiceImpl implements ReputationService {
             for (ChallengeCategory cc : challenge.getCategories()) {
                 Category category = cc.getCategory();
 
-                Reputation rep = reputationRepository.findByMemberAndCategory(member, category)
+                Reputation rep = reputationRepository.findFirstByMemberAndCategory(member, category)
                         .orElseGet(() -> {
                             Reputation newRep = Reputation.builder()
                                     .member(member)
@@ -96,20 +98,47 @@ public class ReputationServiceImpl implements ReputationService {
         }
     }
 
+//    @Override
+//    public ApiResponse<List<ReputationResponse>> getReputationByCategory(Long memberId, Long categoryId) {
+//
+//        Member member = memberRepository.findById(memberId)
+//                .orElseThrow(NotFoundMemberException::new);
+//
+//        Category category = categoryRepository.findById(categoryId)
+//                .orElseThrow(()-> new BusinessException(ErrorCode.NOT_CATEGORY_FOUND));
+//
+//        List<ReputationResponse> reputations = reputationRepository
+//                .findReputationByMemberAndCategory(member, category).stream()
+//                .map(ReputationResponse::new)
+//                .toList();
+//
+//        return ApiResponse.success(ResponseCode.SUCCESS, reputations);
+//    }
+
     @Override
-    public ApiResponse<List<ReputationResponse>> getReputationByCategory(Long memberId, Long categoryId) {
+    public ApiResponse<ReputationResponse> getReputationByCategories(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(()-> new BusinessException(ErrorCode.NOT_CATEGORY_FOUND));
+        List<Category> categories = categoryRepository.findAll();
+        List<ReputationResponse.CategoryScore> scoreByCategory = new ArrayList<>();
 
-        List<ReputationResponse> reputations = reputationRepository
-                .findReputationByMemberAndCategory(member, category).stream()
-                .map(ReputationResponse::new)
-                .toList();
+        for (Category category : categories) {
+            Reputation reputation = reputationRepository
+                    .findFirstByMemberAndCategory(member, category)
+                    .orElse(null);
 
-        return ApiResponse.success(ResponseCode.SUCCESS, reputations);
+            int score = (reputation != null) ? reputation.getScore() : 0;
+
+            scoreByCategory.add(new ReputationResponse.CategoryScore(
+                    category.getName(),
+                    score
+            ));
+        }
+        Integer totalScore1 = reputationRepository.findTotalScoreByMember(memberId);
+        int totalScore = (totalScore1 != null) ? totalScore1 : 0;
+        ReputationResponse response = new ReputationResponse(member,scoreByCategory,totalScore);
+        return ApiResponse.success(ResponseCode.SUCCESS, response);
     }
 }
