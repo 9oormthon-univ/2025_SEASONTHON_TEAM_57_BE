@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 @Entity
 @DiscriminatorValue("Challenge")
 @RequiredArgsConstructor
-public class ChallengeNotification extends Notification {
+    public class ChallengeNotification extends Notification {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "challenge_id")
-    private Challenge challenge;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "challenge_id")
+        private Challenge challenge;
 
-    public ChallengeNotification(Member member, String message, LocalDateTime createdAt, Challenge challenge) {
-        super(member, message, createdAt);
-        this.challenge = challenge;
-    }
+        public ChallengeNotification(Member member, String message, LocalDateTime createdAt, Challenge challenge) {
+            super(member, message, createdAt);
+            this.challenge = challenge;
+        }
 }

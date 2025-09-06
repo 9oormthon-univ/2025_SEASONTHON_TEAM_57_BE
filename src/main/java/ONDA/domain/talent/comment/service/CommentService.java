@@ -2,6 +2,8 @@ package ONDA.domain.talent.comment.service;
 
 import ONDA.domain.member.entity.Member;
 import ONDA.domain.member.repository.MemberRepository;
+import ONDA.domain.notification.entity.TalentNotification;
+import ONDA.domain.notification.repository.NotificationRepository;
 import ONDA.domain.talent.comment.dto.CommentCreateRequest;
 import ONDA.domain.talent.comment.dto.CommentResponse;
 import ONDA.domain.talent.comment.dto.CommentUpdateRequest;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,6 +31,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final TalentPostRepository talentPostRepository;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public CommentResponse create(Long postId, Long memberId, CommentCreateRequest request) {
@@ -56,6 +60,18 @@ public class CommentService {
                 .build();
 
         Comment savedComment = commentRepository.save(comment);
+
+        if (!post.getAuthor().getId().equals(memberId)) {
+            String message = member.getNickname() + "님이 회원님의 게시글에 댓글을 남겼습니다.";
+            TalentNotification notification = new TalentNotification(
+                    post.getAuthor(),
+                    message,
+                    LocalDateTime.now(),
+                    post
+            );
+            notificationRepository.save(notification);
+        }
+
         return CommentResponse.fromWithoutChildren(savedComment);
     }
 

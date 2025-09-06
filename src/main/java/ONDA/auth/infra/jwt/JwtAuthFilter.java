@@ -47,6 +47,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         !m.match("/api/challenges/review", uri) &&
                         !m.match("/api/challenges/my*", uri) &&
                         !m.match("/api/challenge-posts/my*", uri) &&
+                        !m.match("/api/notifications/**", uri) &&
                         !m.match("/api/profile/**", uri)
         );
     }
