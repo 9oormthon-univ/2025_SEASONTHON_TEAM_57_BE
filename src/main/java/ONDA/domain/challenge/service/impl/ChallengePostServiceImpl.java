@@ -42,6 +42,13 @@ public class ChallengePostServiceImpl implements ChallengePostService {
         Challenge challenge = challengeRepository.findByIdAndProgressStatus(dto.getChallengeId(), ProgressStatus.ONGOING)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_CHALLENGE_FOUND));
 
+        LocalDate today = LocalDate.now();
+
+        boolean alreadyPosted = challengePostRepository.existsByMemberAndChallengeAndDate(memberId, challenge.getId(), today);
+        if (alreadyPosted) {
+            throw new BusinessException(ErrorCode.ALREADY_POSTED_TODAY);
+        }
+
         ChallengePost challengePost = ChallengePost.builder()
                         .author(member)
                         .challenge(challenge)

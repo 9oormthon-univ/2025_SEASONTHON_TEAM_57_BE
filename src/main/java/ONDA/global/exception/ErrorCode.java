@@ -27,6 +27,7 @@ public enum ErrorCode {
     NOT_CHALLENGE_POST_FOUND("CHALLENGE-POST-404", "챌린지 인증글을 찾을 수 없습니다."),
     CHALLENGE_ALREADY_REVIEWED("CHALLENGE001", "이미 심사 완료된 챌린지는 상태 변경이 불가합니다."),
     ALREADY_VOTED("VOTE001", "이미 투표하였습니다."),
+    ALREADY_POSTED_TODAY("CHALLENGEPOST001","이미 오늘 인증글을 작성했습니다."),
 
 
     OWNER_MISMATCH("OWNER_MISMATCH","삭제 권한 없음(해당 글의 작성자가 아님)."),
