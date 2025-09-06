@@ -1,0 +1,14 @@
+package ONDA.domain.challenge.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class ChallengePostCreateResponse {
+    @Schema(description = "챌린지 인증 ID", example = "1")
+    private Long challengePostId;
+
+}
+

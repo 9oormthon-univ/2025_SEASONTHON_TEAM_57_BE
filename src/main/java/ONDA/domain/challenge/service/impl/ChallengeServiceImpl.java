@@ -1,5 +1,6 @@
 package ONDA.domain.challenge.service.impl;
 
+import ONDA.domain.challenge.dto.ChallengeCreateResponse;
 import ONDA.domain.challenge.dto.ChallengeRequest;
 import ONDA.domain.challenge.dto.ChallengeResponse;
 import ONDA.domain.challenge.entity.*;
@@ -14,7 +15,6 @@ import ONDA.global.category.CategoryRepository;
 import ONDA.global.exception.BusinessException;
 import ONDA.global.exception.ErrorCode;
 import ONDA.global.exception.NotFoundMemberException;
-import ONDA.global.media.entity.ChallengeImage;
 import ONDA.global.response.ApiResponse;
 import ONDA.global.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public void saveChallenge(Long memberId, ChallengeRequest dto){
+    public ChallengeCreateResponse saveChallenge(Long memberId, ChallengeRequest dto){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -69,9 +69,9 @@ public class ChallengeServiceImpl implements ChallengeService {
 //                .toList();
 
         //challenge.setImages(postImages);
-        challengeRepository.save(challenge);
+        Challenge save = challengeRepository.save(challenge);
+        return new ChallengeCreateResponse(save.getId());
     }
-
     private ProgressStatus calculateProgressStatus(LocalDate startDate, LocalDate endDate) {
         LocalDate today = LocalDate.now();
         if (today.isBefore(startDate)) {

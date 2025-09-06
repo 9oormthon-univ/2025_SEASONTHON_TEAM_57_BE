@@ -1,9 +1,6 @@
 package ONDA.domain.challenge.service.impl;
 
-import ONDA.domain.challenge.dto.ChallengePostCalendarResponse;
-import ONDA.domain.challenge.dto.ChallengePostRequest;
-import ONDA.domain.challenge.dto.ChallengePostResponse;
-import ONDA.domain.challenge.dto.ChallengeResponse;
+import ONDA.domain.challenge.dto.*;
 import ONDA.domain.challenge.entity.*;
 import ONDA.domain.challenge.repository.ChallengePostRepository;
 import ONDA.domain.challenge.repository.ChallengeRepository;
@@ -36,7 +33,7 @@ public class ChallengePostServiceImpl implements ChallengePostService {
     private final ChallengeRepository challengeRepository;
 
     @Override
-    public void saveChallengePost(Long memberId, ChallengePostRequest dto){
+    public ChallengePostCreateResponse saveChallengePost(Long memberId, ChallengePostRequest dto){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -61,7 +58,8 @@ public class ChallengePostServiceImpl implements ChallengePostService {
 //                .toList();
 //
 //        challengePost.setImages(postImages);
-        challengePostRepository.save(challengePost);
+        ChallengePost save = challengePostRepository.save(challengePost);
+        return new ChallengePostCreateResponse(save.getId());
     }
 
     @Override
