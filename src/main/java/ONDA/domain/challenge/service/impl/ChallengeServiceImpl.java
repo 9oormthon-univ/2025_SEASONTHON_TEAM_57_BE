@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -167,9 +168,10 @@ public class ChallengeServiceImpl implements ChallengeService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
-        List<Challenge> challenges = challengeRepository.findChallengesByParticipantOrderByChallengeIdDesc(member);
+        List<Challenge> challenges = challengeRepository.findChallengesByParticipant(member);
 
         List<ChallengeResponse> responses = challenges.stream()
+                .sorted(Comparator.comparing(Challenge::getId).reversed())
                 .map(ChallengeResponse::new)
                 .toList();
 

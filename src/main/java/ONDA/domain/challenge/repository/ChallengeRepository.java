@@ -37,8 +37,8 @@ public interface ChallengeRepository extends JpaRepository<Challenge,Long> {
 
     @Query("SELECT DISTINCT p.challenge " +
             "FROM ChallengePost p " +
-            "WHERE p.author = :member ORDER BY p.challenge.id DESC")
-    List<Challenge> findChallengesByParticipantOrderByChallengeIdDesc(@Param("member") Member member);
+            "WHERE p.author = :member")
+    List<Challenge> findChallengesByParticipant(@Param("member") Member member);
 
     @Query("SELECT DISTINCT p.challenge " +
             "FROM ChallengePost p " +
