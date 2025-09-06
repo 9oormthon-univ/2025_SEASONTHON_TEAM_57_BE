@@ -18,4 +18,10 @@ public interface ChallengePostRepository extends JpaRepository<ChallengePost,Lon
     List<ChallengePost> findByAuthorAndCreateDate(Member member, LocalDate targetDate);
     @Query("SELECT DISTINCT p.author FROM ChallengePost p WHERE p.challenge.id = :challengeId")
     List<Member> findDistinctAuthorsByChallengeId(@Param("challengeId") Long challengeId);
+    @Query("SELECT p FROM ChallengePost p WHERE p.author = :member AND p.createDate BETWEEN :startDate AND :endDate")
+    List<ChallengePost> findByAuthorAndDateRange(
+            @Param("member") Member member,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 }

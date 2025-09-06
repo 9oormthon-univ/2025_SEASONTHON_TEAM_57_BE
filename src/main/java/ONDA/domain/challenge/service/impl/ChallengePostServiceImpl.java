@@ -1,5 +1,6 @@
 package ONDA.domain.challenge.service.impl;
 
+import ONDA.domain.challenge.dto.ChallengePostCalendarResponse;
 import ONDA.domain.challenge.dto.ChallengePostRequest;
 import ONDA.domain.challenge.dto.ChallengePostResponse;
 import ONDA.domain.challenge.dto.ChallengeResponse;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,17 +81,17 @@ public class ChallengePostServiceImpl implements ChallengePostService {
         return ApiResponse.success(ResponseCode.SUCCESS, challengePosts);
     }
 
-    @Override
-    public ApiResponse<List<ChallengePostResponse>> getMyChallengePostsByDate(Long memberId, LocalDate targetDate) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(NotFoundMemberException::new);
-
-        List<ChallengePostResponse> challengePosts= challengePostRepository.findByAuthorAndCreateDate(member,targetDate).stream()
-                .map(ChallengePostResponse::new)
-                .toList();
-
-        return ApiResponse.success(ResponseCode.SUCCESS, challengePosts);
-    }
+//    @Override
+//    public ApiResponse<List<ChallengePostResponse>> getMyChallengePostsByDate(Long memberId, LocalDate targetDate) {
+//        Member member = memberRepository.findById(memberId)
+//                .orElseThrow(NotFoundMemberException::new);
+//
+//        List<ChallengePostResponse> challengePosts= challengePostRepository.findByAuthorAndCreateDate(member,targetDate).stream()
+//                .map(ChallengePostResponse::new)
+//                .toList();
+//
+//        return ApiResponse.success(ResponseCode.SUCCESS, challengePosts);
+//    }
 
     @Override
     public ApiResponse<List<MemberResponse>> getChallengeParticipants(Long challengeId) {
@@ -109,5 +112,33 @@ public class ChallengePostServiceImpl implements ChallengePostService {
                 .toList();
 
         return ApiResponse.success(ResponseCode.SUCCESS, responses);
+    }
+
+    @Override
+    public ApiResponse<ChallengePostCalendarResponse> getMyChallengePostsByMonth(Long memberId, int year, int month) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+        List<ChallengePost> posts = challengePostRepository.findByAuthorAndDateRange(member, startDate, endDate);
+
+        Map<LocalDate, List<ChallengePostResponse>> grouped = posts.stream()
+                .map(ChallengePostResponse::new)
+                .collect(Collectors.groupingBy(ChallengePostResponse::getCreateDate));
+
+        List<ChallengePostCalendarResponse.DayPosts> days = grouped.entrySet().stream()
+                .map(entry -> new ChallengePostCalendarResponse.DayPosts(
+                        entry.getKey(),
+                        entry.getValue().size(),
+                        entry.getValue()
+                ))
+                .sorted(Comparator.comparing(ChallengePostCalendarResponse.DayPosts::getDate))
+                .toList();
+
+        ChallengePostCalendarResponse response = new ChallengePostCalendarResponse(year, month, days);
+
+        return ApiResponse.success(ResponseCode.SUCCESS, response);
     }
 }
