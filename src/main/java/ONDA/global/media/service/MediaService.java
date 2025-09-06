@@ -1,12 +1,13 @@
 package ONDA.global.media.service;
 
 import ONDA.domain.member.entity.Member;
-import ONDA.domain.member.service.MemberService;
+import ONDA.domain.talent.post.entity.TalentPost;
+import ONDA.domain.talent.post.repository.TalentPostRepository;
 import ONDA.domain.talent.post.service.TalentPostService;
 import ONDA.global.exception.BusinessException;
 import ONDA.global.exception.ErrorCode;
 import ONDA.global.media.entity.ImageUsageType;
-import ONDA.global.media.entity.UploadedImage;
+import ONDA.global.media.entity.PostImage;
 import ONDA.global.media.repository.UploadedImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ import java.util.UUID;
 public class MediaService {
 
     private final UploadedImageRepository uploadedImageRepository;
-    private final MemberService memberService;
+    private final TalentPostService talentPostService;
 
     @Value("${app.backend-base-url}")
     private String backUrl;
@@ -45,26 +46,31 @@ public class MediaService {
     private final long maxFileSize = 10 * 1024 * 1024; // 10MB
 
     @Transactional
-    public UploadedImage uploadImage(MultipartFile file, Member uploader, ImageUsageType usageType, Long referenceId) {
+    public PostImage uploadImage(MultipartFile file, Member uploader, ImageUsageType usageType, Long postId) {
         validateFile(file);
         
         String fileName = generateFileName(file);
         String filePath = saveFile(file, fileName);
-        
-        UploadedImage uploadedImage = UploadedImage.builder()
+
+        TalentPost post = talentPostService.getPostById(postId);
+
+        PostImage postImage = PostImage.builder()
                 .imageUrl(fileName)
                 .uploader(uploader)
-                .usageType(usageType)
-                .referenceId(referenceId)
+                .post(post)
                 .build();
-        return uploadedImageRepository.save(uploadedImage);
+
+        if (usageType == ImageUsageType.TALENT_POST_IMAGE) {
+            post.addImages(postImage);
+        }
+
+        return uploadedImageRepository.save(postImage);
     }
 
     @Transactional
-    public List<UploadedImage> uploadImages(List<MultipartFile> files, Member uploader, 
-                                          ImageUsageType usageType, Long referenceId) {
+    public List<PostImage> uploadImages(List<MultipartFile> files, Member uploader,
+                                        ImageUsageType usageType, Long referenceId) {
         if (files.size() > 5) {
-
             throw new BusinessException(ErrorCode.TOO_MANY_FILES);
         }
 
@@ -97,7 +103,7 @@ public class MediaService {
 
     @Transactional
     public void deleteImage(Long imageId, Member member) {
-        UploadedImage image = uploadedImageRepository.findById(imageId)
+        PostImage image = uploadedImageRepository.findById(imageId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.IMAGE_NOT_FOUND));
         
         if (!image.getUploader().getId().equals(member.getId())) {

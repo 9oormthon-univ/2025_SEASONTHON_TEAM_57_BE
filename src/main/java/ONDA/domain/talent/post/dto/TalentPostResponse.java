@@ -4,7 +4,6 @@ import ONDA.domain.talent.post.entity.PostStatus;
 import ONDA.domain.talent.post.entity.PostType;
 import ONDA.domain.talent.post.entity.TalentPost;
 import ONDA.global.media.dto.ImageUploadResponse;
-import ONDA.global.media.entity.UploadedImage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -68,19 +67,14 @@ public class TalentPostResponse {
         private PostType type;
     }
 
-    public static TalentPostResponse from(TalentPost post, List<UploadedImage> images) {
+    public static TalentPostResponse from(TalentPost post) {
         return baseBuilder(post)
-                .images(images.stream()
+                .images(post.getImages().stream()
                         .map(im -> ImageUploadResponse.builder()
                                 .imageId(im.getId())
                                 .imageUrl(im.getImageUrl())
                                 .build())
                         .toList())
-                .build();
-    }
-
-    public static TalentPostResponse from(TalentPost post) {
-        return baseBuilder(post)
                 .build();
     }
 

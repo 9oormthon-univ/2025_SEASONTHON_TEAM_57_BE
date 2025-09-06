@@ -4,10 +4,9 @@ import ONDA.domain.member.entity.Member;
 import ONDA.domain.member.service.MemberService;
 import ONDA.domain.talent.post.service.TalentPostService;
 import ONDA.global.exception.BusinessException;
-import ONDA.global.exception.ErrorCode;
 import ONDA.global.media.dto.ImageUploadResponse;
 import ONDA.global.media.entity.ImageUsageType;
-import ONDA.global.media.entity.UploadedImage;
+import ONDA.global.media.entity.PostImage;
 import ONDA.global.media.service.MediaService;
 import ONDA.global.response.ApiResponse;
 import ONDA.global.response.ResponseCode;
@@ -52,10 +51,10 @@ public class MediaController {
         Member member = memberService.findById(memberId);
         List<MultipartFile> fileList = Arrays.asList(files);
         
-        List<UploadedImage> uploadedImages = mediaService.uploadImages(fileList, member, usageType, referenceId);
+        List<PostImage> postImages = mediaService.uploadImages(fileList, member, usageType, referenceId);
 
 
-        List<ImageUploadResponse> responses = uploadedImages.stream()
+        List<ImageUploadResponse> responses = postImages.stream()
                 .map(uploadedImage -> ImageUploadResponse.builder()
                         .imageId(uploadedImage.getId())
                         .imageUrl(mediaService.getImageUrl(uploadedImage.getImageUrl()))

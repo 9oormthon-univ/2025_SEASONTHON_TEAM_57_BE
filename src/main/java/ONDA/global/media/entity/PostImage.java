@@ -4,10 +4,7 @@ package ONDA.global.media.entity;
 import ONDA.domain.member.entity.Member;
 import ONDA.domain.talent.post.entity.TalentPost;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -15,8 +12,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "uploaded_image")
-public class UploadedImage {
+@Table(name = "post_image")
+public class PostImage {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,25 +24,20 @@ public class UploadedImage {
     @JoinColumn(name = "uploader_id")
     private Member uploader;
 
-    @Enumerated(EnumType.STRING)
-    private ImageUsageType usageType;
-
-    @Column(name = "reference_id")
-    private Long referenceId; // 사용되는 엔티티의 ID
-
     @CreationTimestamp
     private LocalDateTime uploadedAt;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "talent_post_id")
     private TalentPost post;
 
-
     @Builder
-    private UploadedImage(String imageUrl, Member uploader, ImageUsageType usageType, Long referenceId) {
+    private PostImage(String imageUrl, Member uploader, TalentPost post) {
         this.imageUrl = imageUrl;
         this.uploader = uploader;
-        this.usageType = usageType;
-        this.referenceId = referenceId;
+        this.post = post;
     }
+
 }
 
