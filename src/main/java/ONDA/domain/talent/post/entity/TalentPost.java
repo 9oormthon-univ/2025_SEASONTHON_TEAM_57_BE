@@ -73,9 +73,4 @@ public class TalentPost {
         this.categories.clear();
         this.categories.addAll(categories);
     }
-
-    public void addImages(PostImage image) {
-        images.add(image);
-        image.setPost(this);
-    }
 }

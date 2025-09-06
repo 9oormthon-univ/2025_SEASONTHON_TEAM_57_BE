@@ -1,9 +1,6 @@
 package ONDA.domain.challenge.controller;
 
-import ONDA.domain.challenge.dto.ChallengePostCalendarResponse;
-import ONDA.domain.challenge.dto.ChallengePostRequest;
-import ONDA.domain.challenge.dto.ChallengePostResponse;
-import ONDA.domain.challenge.dto.VoteResultResponse;
+import ONDA.domain.challenge.dto.*;
 import ONDA.domain.challenge.service.inf.ChallengePostService;
 import ONDA.domain.challenge.service.inf.ChallengeVoteService;
 import ONDA.domain.member.dto.MemberResponse;
@@ -30,10 +27,10 @@ public class ChallengePostController {
     @Operation(summary = "챌린지 인증글 생성", description = "진행중인 챌린지 인증글 하나를 생성합니다")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "챌린지 인증글 생성 성공")
     @PostMapping("")
-    public ResponseEntity<ApiResponse<Void>> createChallengePost(@AuthenticationPrincipal Long memberId,
+    public ResponseEntity<ApiResponse<ChallengePostCreateResponse>> createChallengePost(@AuthenticationPrincipal Long memberId,
                                                              @RequestBody ChallengePostRequest dto) {
-        challengePostService.saveChallengePost(memberId, dto);
-        return ResponseEntity.status(201).body(ApiResponse.success(ResponseCode.CREATED, null));
+        ChallengePostCreateResponse saved = challengePostService.saveChallengePost(memberId, dto);
+        return ResponseEntity.status(201).body(ApiResponse.success(ResponseCode.CREATED, saved));
     }
 
     @Operation(summary = "챌린지 인증글 조회", description = "챌린지 인증글 하나를 조회합니다")

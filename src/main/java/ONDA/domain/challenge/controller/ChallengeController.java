@@ -1,8 +1,8 @@
 package ONDA.domain.challenge.controller;
 
+import ONDA.domain.challenge.dto.ChallengeCreateResponse;
 import ONDA.domain.challenge.dto.ChallengeRequest;
 import ONDA.domain.challenge.dto.ChallengeResponse;
-import ONDA.domain.challenge.entity.ProgressStatus;
 import ONDA.domain.challenge.entity.ReviewStatus;
 import ONDA.domain.challenge.service.inf.ChallengeService;
 import ONDA.global.response.ApiResponse;
@@ -68,10 +68,10 @@ public class ChallengeController {
     @Operation(summary = "챌린지 생성", description = "챌린지 하나를 생성합니다")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "챌린지 생성 성공")
     @PostMapping("")
-    public ResponseEntity<ApiResponse<Void>> createChallenge(@AuthenticationPrincipal Long memberId,
-                                                             @RequestBody ChallengeRequest dto) {
-        challengeService.saveChallenge(memberId, dto);
-        return ResponseEntity.status(201).body(ApiResponse.success(ResponseCode.CREATED, null));
+    public ResponseEntity<ApiResponse<ChallengeCreateResponse>> createChallenge(@AuthenticationPrincipal Long memberId,
+                                                                                @RequestBody ChallengeRequest dto) {
+        ChallengeCreateResponse challengeCreateResponse = challengeService.saveChallenge(memberId, dto);
+        return ResponseEntity.status(201).body(ApiResponse.success(ResponseCode.CREATED, challengeCreateResponse));
     }
 
     @Operation(summary = "챌린지 조회", description = "챌린지 하나를 조회합니다")

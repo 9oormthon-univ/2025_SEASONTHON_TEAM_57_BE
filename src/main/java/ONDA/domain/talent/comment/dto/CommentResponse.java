@@ -21,6 +21,9 @@ public class CommentResponse {
     
     @Schema(description = "작성자 이름", example = "홍길동")
     private String authorName;
+
+    @Schema(description = "작성자 프로필 사진", example = "https://api.wownd.store/api/media/images/962d32db-cb5f-47b1....")
+    private String authorProfile;
     
     @Schema(description = "댓글 내용", example = "좋은 게시글이네요!")
     private String content;
@@ -39,6 +42,7 @@ public class CommentResponse {
                 .id(comment.getId())
                 .authorId(comment.getAuthor().getId())
                 .authorName(comment.getAuthor().getNickname())
+                .authorProfile(comment.getAuthor().getProfile())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)
@@ -53,6 +57,7 @@ public class CommentResponse {
                 .id(comment.getId())
                 .authorId(comment.getAuthor().getId())
                 .authorName(comment.getAuthor().getNickname())
+                .authorProfile(comment.getAuthor().getProfile())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .parentId(comment.getParent() != null ? comment.getParent().getId() : null)

@@ -24,6 +24,7 @@ public enum ErrorCode {
     //도메인 에러 코드 작성
     NOT_MEMBER_FOUND("MEMBER-404", "회원을 찾을 수 없습니다."),
     NOT_CHALLENGE_FOUND("CHALLENGE-404", "챌린지를 찾을 수 없습니다."),
+    CHALLENGE_NOT_FOUND("CHALLENGE-404", "챌린지를 찾을 수 없습니다."),
     NOT_CHALLENGE_POST_FOUND("CHALLENGE-POST-404", "챌린지 인증글을 찾을 수 없습니다."),
     CHALLENGE_ALREADY_REVIEWED("CHALLENGE001", "이미 심사 완료된 챌린지는 상태 변경이 불가합니다."),
     ALREADY_VOTED("VOTE001", "이미 투표하였습니다."),
@@ -49,6 +50,7 @@ public enum ErrorCode {
     TOO_MANY_FILES("FILE008", "업로드 가능한 파일 수를 초과했습니다 (최대 5개)"),
     FORBIDDEN("FILE009", "권한이 없습니다"),
     PROFILE_IMAGE_SINGLE_REQUIRED("FILE010", "프로필 이미지는 한 개만 업로드 가능"),
+    INVALID_IMAGE_USAGE_TYPE("FILE011", "지원하지 않는 이미지 사용 타입입니다"),
 
     NOT_REPUTATION_FOUND("REPUTATION-404", "명성을 찾을 수 없습니다."),
     NOT_CATEGORY_FOUND("CATEGORY-404", "카테고리를 찾을 수 없습니다.");

@@ -1,6 +1,7 @@
 package ONDA.domain.challenge.entity;
 
 import ONDA.domain.member.entity.Member;
+import ONDA.global.media.entity.ChallengePostImage;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,7 +29,7 @@ public class ChallengePost {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "challengePost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChallengePostImage> images = new ArrayList<>();
 
     private LocalDate createDate;

@@ -1,9 +1,6 @@
 package ONDA.domain.challenge.service.impl;
 
-import ONDA.domain.challenge.dto.ChallengePostCalendarResponse;
-import ONDA.domain.challenge.dto.ChallengePostRequest;
-import ONDA.domain.challenge.dto.ChallengePostResponse;
-import ONDA.domain.challenge.dto.ChallengeResponse;
+import ONDA.domain.challenge.dto.*;
 import ONDA.domain.challenge.entity.*;
 import ONDA.domain.challenge.repository.ChallengePostRepository;
 import ONDA.domain.challenge.repository.ChallengeRepository;
@@ -17,6 +14,7 @@ import ONDA.global.exception.NotFoundMemberException;
 import ONDA.global.response.ApiResponse;
 import ONDA.global.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +33,7 @@ public class ChallengePostServiceImpl implements ChallengePostService {
     private final ChallengeRepository challengeRepository;
 
     @Override
-    public void saveChallengePost(Long memberId, ChallengePostRequest dto){
+    public ChallengePostCreateResponse saveChallengePost(Long memberId, ChallengePostRequest dto){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -55,12 +53,13 @@ public class ChallengePostServiceImpl implements ChallengePostService {
                         .createDate(LocalDate.now())
                         .build();
 
-        List<ChallengePostImage> postImages = dto.getImages().stream()
-                .map(imageUrl -> ChallengePostImage.of(challengePost, imageUrl))
-                .toList();
-
-        challengePost.setImages(postImages);
-        challengePostRepository.save(challengePost);
+//        List<ChallengePostImage> postImages = dto.getImages().stream()
+//                .map(imageUrl -> ChallengePostImage.of(challengePost, imageUrl))
+//                .toList();
+//
+//        challengePost.setImages(postImages);
+        ChallengePost save = challengePostRepository.save(challengePost);
+        return new ChallengePostCreateResponse(save.getId());
     }
 
     @Override

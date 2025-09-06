@@ -1,6 +1,6 @@
 package ONDA.domain.challenge.service.impl;
 
-import ONDA.domain.challenge.entity.ChallengeImage;
+import ONDA.domain.challenge.dto.ChallengeCreateResponse;
 import ONDA.domain.challenge.dto.ChallengeRequest;
 import ONDA.domain.challenge.dto.ChallengeResponse;
 import ONDA.domain.challenge.entity.*;
@@ -37,7 +37,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public void saveChallenge(Long memberId, ChallengeRequest dto){
+    public ChallengeCreateResponse saveChallenge(Long memberId, ChallengeRequest dto){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -64,14 +64,14 @@ public class ChallengeServiceImpl implements ChallengeService {
 
         challenge.setCategories(challengeCategories);
 
-        List<ChallengeImage> postImages = dto.getImages().stream()
-                .map(imageUrl -> ChallengeImage.of(challenge, imageUrl))
-                .toList();
+//        List<ChallengeImage> postImages = dto.getImages().stream()
+//                .map(imageUrl -> ChallengeImage.of(challenge, imageUrl))
+//                .toList();
 
-        challenge.setImages(postImages);
-        challengeRepository.save(challenge);
+        //challenge.setImages(postImages);
+        Challenge save = challengeRepository.save(challenge);
+        return new ChallengeCreateResponse(save.getId());
     }
-
     private ProgressStatus calculateProgressStatus(LocalDate startDate, LocalDate endDate) {
         LocalDate today = LocalDate.now();
         if (today.isBefore(startDate)) {

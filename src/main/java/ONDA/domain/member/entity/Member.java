@@ -44,4 +44,14 @@ public class Member {
         this.birthDate = birthDate;
         this.kakaoId = kakaoId;
     }
+
+    public String changeProfile(String imageUrl) {
+        boolean needRemove = (profile != null && profile.startsWith("https://api.wownd.store"));
+        String oldProfile = profile;
+        profile = imageUrl;
+        if (needRemove) {
+            return oldProfile;
+        }
+        return null;
+    }
 }

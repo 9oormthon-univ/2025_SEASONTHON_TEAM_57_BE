@@ -1,5 +1,6 @@
 package ONDA.domain.challenge.service.inf;
 
+import ONDA.domain.challenge.dto.ChallengeCreateResponse;
 import ONDA.domain.challenge.dto.ChallengeRequest;
 import ONDA.domain.challenge.dto.ChallengeResponse;
 import ONDA.domain.challenge.entity.ProgressStatus;
@@ -9,7 +10,7 @@ import ONDA.global.response.ApiResponse;
 import java.util.List;
 
 public interface ChallengeService {
-    void saveChallenge(Long memberId, ChallengeRequest dto);
+    ChallengeCreateResponse saveChallenge(Long memberId, ChallengeRequest dto);
     ApiResponse<List<ChallengeResponse>> getAllChallenges();
     ApiResponse<List<ChallengeResponse>> getMyChallenges(Long memberId);
     ApiResponse<List<ChallengeResponse>> getMyChallengePosts(Long memberId);

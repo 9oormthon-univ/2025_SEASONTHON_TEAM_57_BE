@@ -1,6 +1,8 @@
 package ONDA.domain.challenge.entity;
 
 import ONDA.domain.member.entity.Member;
+import ONDA.global.media.entity.ChallengeImage;
+import ONDA.global.media.entity.PostImage;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,8 +30,8 @@ public class Challenge {
 
     private String content;
 
-    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChallengeImage> images = new ArrayList<>();
+//    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<ChallengeImage> images = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private ReviewStatus reviewStatus;
@@ -51,6 +53,9 @@ public class Challenge {
 
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChallengeCategory> categories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChallengeImage> images = new ArrayList<>();
 
     public void markReputationCalculated() {
         this.reputationCalculated = true;

@@ -26,6 +26,9 @@ public class TalentPostResponse {
     
     @Schema(description = "작성자 이름", example = "홍길동")
     private String authorName;
+
+    @Schema(description = "작성자 프로필 사진", example = "https://api.wownd.store/api/media/images/962d32db-cb5f-47b1-...")
+    private String authorProfile;
     
     @Schema(description = "게시글 타입", example = "learn/teach/trade")
     private PostType type;
@@ -85,6 +88,7 @@ public class TalentPostResponse {
                 .authorName(post.getAuthor().getNickname())
                 .type(post.getType())
                 .title(post.getTitle())
+                .authorProfile(post.getAuthor().getProfile())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
                 .status(post.getStatus())
