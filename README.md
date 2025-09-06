@@ -3,13 +3,7 @@
 ## 프로젝트 소개
 
 <img width="7680" height="4320" alt="온다 서비스 이미지" src="https://github.com/user-attachments/assets/ed6e8b21-369d-472e-9b4d-af59afa6cc0a" />
-재능과 취미를 나누고 연결하는 재능 공유 플랫폼 ONDA
-
-
-## 기술 스택
-- Backend: Spring Boot
-- DevOps: AWS, GitHub Actions 
-- DB/Cache: MySQL, Redis
+<img width="1920" height="1080" alt="Stack" src="https://github.com/user-attachments/assets/a1103899-9c89-4fc0-868d-6a0d56aae4dd" />
 
 ## 아키텍처
 
