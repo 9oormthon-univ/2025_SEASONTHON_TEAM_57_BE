@@ -50,7 +50,7 @@ public class MediaService {
                 .imageName(fileName)
                 .uploader(uploader)
                 .usageType(usageType)
-                .referenceId(referenceId)
+                //.referenceId(referenceId)
                 .build();
         
         return uploadedImageRepository.save(uploadedImage);

@@ -45,20 +45,24 @@ public class TalentPost {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostCategory> categories = new ArrayList<>();
 
+    private int price;
+
     @Builder
-    public TalentPost(Member author, PostType type, String title, String content) {
+    public TalentPost(Member author, PostType type, String title, String content,int price) {
         this.author = author;
         this.type = type;
         this.title = title;
         this.content = content;
         this.status = PostStatus.OPEN;
+        this.price = price;
     }
 
-    public void update(PostType type, String title, String content, PostStatus status) {
+    public void update(PostType type, String title, String content, PostStatus status,int price) {
         this.type = type;
         this.title = title;
         this.content = content;
         this.status = status;
+        this.price = price;
     }
 
     public void updateCategories(List<PostCategory> categories) {

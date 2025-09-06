@@ -3,7 +3,6 @@ package ONDA.domain.talent.post.service;
 import ONDA.domain.member.entity.Member;
 import ONDA.domain.member.repository.MemberRepository;
 import ONDA.domain.talent.post.dto.TalentPostCreateRequest;
-import ONDA.domain.talent.post.dto.TalentPostListResponse;
 import ONDA.domain.talent.post.dto.TalentPostResponse;
 import ONDA.domain.talent.post.dto.TalentPostUpdateRequest;
 import ONDA.domain.talent.post.entity.PostCategory;
@@ -42,6 +41,7 @@ public class TalentPostService {
                 .type(request.getType())
                 .title(request.getTitle())
                 .content(request.getContent())
+                .price(request.getPrice())
                 .build();
 
         List<PostCategory> postCategories = createPostCategories(post, request.getLearnCategoryIds(), request.getTeachCategoryIds());
@@ -60,23 +60,23 @@ public class TalentPostService {
         return TalentPostResponse.from(post);
     }
 
-    public List<TalentPostListResponse> getByCategory(Long categoryId) {
+    public List<TalentPostResponse> getByCategory(Long categoryId) {
         List<TalentPost> posts = talentPostRepository.findByCategoryId(categoryId);
         return posts.stream()
-                .map(TalentPostListResponse::from)
+                .map(TalentPostResponse::from)
                 .toList();
     }
 
-    public List<TalentPostListResponse> getHotPost() {
+    public List<TalentPostResponse> getHotPost() {
         List<TalentPost> hotPosts = talentPostRepository.findHotPosts();
 
         return hotPosts.stream()
                 .limit(10)
-                .map(TalentPostListResponse::from)
+                .map(TalentPostResponse::from)
                 .toList();
     }
 
-    public List<TalentPostListResponse> getRecommended(Long memberId) {
+    public List<TalentPostResponse> getRecommended(Long memberId) {
         // 일단 최신순으로
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
@@ -85,7 +85,7 @@ public class TalentPostService {
         List<TalentPost> recommendedPosts = talentPostRepository.findAll(pageRequest).getContent();
 
         return recommendedPosts.stream()
-                .map(TalentPostListResponse::from)
+                .map(TalentPostResponse::from)
                 .toList();
     }
 
@@ -102,7 +102,8 @@ public class TalentPostService {
                 request.getType() != null ? request.getType() : post.getType(),
                 request.getTitle() != null ? request.getTitle() : post.getTitle(),
                 request.getContent() != null ? request.getContent() : post.getContent(),
-                request.getStatus() != null ? request.getStatus() : post.getStatus()
+                request.getStatus() != null ? request.getStatus() : post.getStatus(),
+                request.getPrice() != null ? request.getPrice() : post.getPrice()
         );
 
         if (request.getLearnCategoryIds() != null || request.getTeachCategoryIds() != null) {
@@ -125,10 +126,10 @@ public class TalentPostService {
         talentPostRepository.delete(post);
     }
 
-    public List<TalentPostListResponse> getMyPosts(Long memberId) {
+    public List<TalentPostResponse> getMyPosts(Long memberId) {
         List<TalentPost> myPosts = talentPostRepository.findByAuthorId(memberId);
         return myPosts.stream()
-                .map(TalentPostListResponse::from)
+                .map(TalentPostResponse::from)
                 .toList();
     }
 
@@ -160,5 +161,16 @@ public class TalentPostService {
         }
 
         return postCategories;
+    }
+
+    public void uploadImages() {
+    }
+
+    public List<TalentPostResponse> getAll() {
+        List<TalentPost> posts = talentPostRepository.findAllByOrderByCreatedAtDesc();
+        return posts.stream()
+                .limit(20)
+                .map(TalentPostResponse::from)
+                .toList();
     }
 }

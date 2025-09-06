@@ -5,7 +5,7 @@ spring:
 app:
   cors:
     allowed-origins: "https://2025-seasonthon-team-57-fe.vercel.app"
-  backend-base-url: http://43.202.29.134:8080
+  backend-base-url: https://api.wownd.store
 
 kakao:
   client_id: ${KAKAO_CLIENT_ID}

@@ -30,4 +30,7 @@ public class TalentPostUpdateRequest {
     
     @Schema(description = "가르치고 싶은 카테고리 ID 목록", example = "[3, 4]")
     private List<Long> teachCategoryIds;
+
+    @Schema(description = "가격", example = "10000")
+    private Integer price;
 }

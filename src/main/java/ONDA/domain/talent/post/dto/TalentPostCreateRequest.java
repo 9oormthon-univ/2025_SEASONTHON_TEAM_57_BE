@@ -31,4 +31,7 @@ public class TalentPostCreateRequest {
     
     @Schema(description = "알려주고 싶은 카테고리 ID 목록", example = "[3, 4]")
     private List<Long> teachCategoryIds;
+
+    @Schema(description = "가격", example = "10000")
+    private int price;
 }

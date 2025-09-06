@@ -29,6 +29,10 @@ public class MemberService {
     public void save(Member member) {
         memberRepository.save(member);
     }
+
+    public void uploadProfile() {
+
+    }
 //    @Transactional(readOnly = true)
 //    public MemberResponse findMemberById(Long memberId) {
 //        return MemberResponse.from(getMember(memberId));
