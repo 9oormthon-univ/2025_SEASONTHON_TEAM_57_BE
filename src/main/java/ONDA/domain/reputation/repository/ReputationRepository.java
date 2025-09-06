@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ReputationRepository extends JpaRepository<Reputation, Long> {
@@ -14,4 +15,5 @@ public interface ReputationRepository extends JpaRepository<Reputation, Long> {
     int findTotalScoreByMember(@Param("memberId") Long memberId);
 
     Optional<Reputation> findByMemberAndCategory(Member member, Category category);
+    List<Reputation> findReputationByMemberAndCategory(Member memberId, Category category);
 }
