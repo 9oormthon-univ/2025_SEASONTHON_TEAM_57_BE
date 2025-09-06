@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final AntPathMatcher m = new AntPathMatcher();
@@ -35,8 +37,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        //인증 필요한거 추가
-        return false;
+        String method = request.getMethod();
+
+        boolean isGet = "GET".equalsIgnoreCase(method);
+
+        return isGet && (
+                !m.match("/api/talent-posts/my", uri) ||
+                        !m.match("/api/talent-posts/recommended", uri) ||
+                        !m.match("/api/talent-posts/my", uri) ||
+                        !m.match("/api/challenges/review", uri) ||
+                        !m.match("/api/challenges/my*", uri));
     }
 
     @Override
