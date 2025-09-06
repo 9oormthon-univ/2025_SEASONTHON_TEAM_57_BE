@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface ReputationService {
     void assignReputationScores(Long challengeId);
-    ApiResponse<List<ReputationResponse>> getReputationByCategory(Long memberId, Long categoryId);
+    //ApiResponse<List<ReputationResponse>> getReputationByCategory(Long memberId, Long categoryId);
+    ApiResponse<ReputationResponse> getReputationByCategories(Long memberId);
 }

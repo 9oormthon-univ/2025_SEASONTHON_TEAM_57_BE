@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReputationRepository extends JpaRepository<Reputation, Long> {
-    @Query("SELECT COALESCE(SUM(r.score), 0) FROM Reputation r WHERE r.member.id = :memberId")
-    int findTotalScoreByMember(@Param("memberId") Long memberId);
+    @Query("SELECT SUM(r.score) FROM Reputation r WHERE r.member.id = :memberId")
+    Integer findTotalScoreByMember(@Param("memberId") Long memberId);
 
-    Optional<Reputation> findByMemberAndCategory(Member member, Category category);
-    List<Reputation> findReputationByMemberAndCategory(Member memberId, Category category);
+    @Query("SELECT r FROM Reputation r WHERE r.member = :member AND r.category = :category")
+    Optional<Reputation> findFirstByMemberAndCategory(@Param("member") Member member, @Param("category") Category category);
 }

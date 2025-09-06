@@ -20,11 +20,11 @@ import java.util.List;
 public class ReputationController {
     private final ReputationService reputationService;
 
-    @Operation(summary = "사용자의 카테고리별 명성 점수 조회", description = "사용자의 카테고리별 명성 점수 조회를 조회합니다")
-    @GetMapping("/{categoryId}")
-    public ResponseEntity<ApiResponse<List<ReputationResponse>>> getReputationByCategory(@PathVariable("categoryId") Long categoryId,
-                                                                                         @AuthenticationPrincipal Long memberId) {
-        ApiResponse<List<ReputationResponse>> response = reputationService.getReputationByCategory(memberId, categoryId);
-        return ResponseEntity.status(200).body(response);
-    }
+//    @Operation(summary = "사용자의 카테고리별 명성 점수 조회", description = "사용자의 카테고리별 명성 점수 조회를 조회합니다")
+//    @GetMapping("/{categoryId}")
+//    public ResponseEntity<ApiResponse<List<ReputationResponse>>> getReputationByCategory(@PathVariable("categoryId") Long categoryId,
+//                                                                                         @AuthenticationPrincipal Long memberId) {
+//        ApiResponse<List<ReputationResponse>> response = reputationService.getReputationByCategory(memberId, categoryId);
+//        return ResponseEntity.status(200).body(response);
+//    }
 }

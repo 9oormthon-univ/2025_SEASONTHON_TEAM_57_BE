@@ -33,6 +33,7 @@ public class DevTestMemberInit implements CommandLineRunner {
     @Override
     public void run(String... args) {
         Long kakaoId = 123456789L;
+        Long kakaoId2 = 987654321L;
 
         Optional<Member> member = memberRepository.findByKakaoId(kakaoId);
         if (member.isPresent()) {
@@ -53,7 +54,7 @@ public class DevTestMemberInit implements CommandLineRunner {
                 .nickname("테스트계정2")
                 .gender(Gender.FEMALE)
                 .birthDate(LocalDate.of(1997, 7, 7))
-                .kakaoId(kakaoId)
+                .kakaoId(kakaoId2)
                 .build();
         memberRepository.save(m2);
 
@@ -66,11 +67,11 @@ public class DevTestMemberInit implements CommandLineRunner {
                 LocalDateTime.of(2025, 8, 19, 12, 0,1), m);
 
         Challenge challenge3 = addChallenge("세 번째 챌린지", "매일 20분 명상하기","https://example.com/image2.png",ReviewStatus.APPROVED,
-                ProgressStatus.NOT_STARTED, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
+                ProgressStatus.ONGOING, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
                 LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
 
         Challenge challenge4 = addChallenge("네 번째 챌린지", "매일 20분 명상하기","https://example.com/image2.png",ReviewStatus.APPROVED,
-                ProgressStatus.ENDED, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
+                ProgressStatus.ONGOING, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
                 LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
 
         addChallengePost(m, challenge1, LocalDate.of(2025, 9, 1));
