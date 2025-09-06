@@ -1,3 +1,11 @@
 spring:
   profiles:
     default: dev # (운영환경에서는 prod 주입)
+
+app:
+  cors:
+    allowed-origins: "https://2025-seasonthon-team-57-fe.vercel.app"
+  backend-base-url: https://api.wownd.store
+
+kakao:
+  client_id: ${KAKAO_CLIENT_ID}

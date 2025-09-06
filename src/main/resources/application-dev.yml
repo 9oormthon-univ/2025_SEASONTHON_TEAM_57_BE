@@ -5,7 +5,33 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+app:
+  upload:
+    dir: uploads
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-exp-seconds: 1209600000 #14일
+  refresh-exp-seconds: 1209600000 #14일
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
