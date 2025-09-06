@@ -25,8 +25,8 @@ public class ChallengeRequest {
     @Schema(description = "챌린지 내용", example = "하루에 영어 단어 10개씩 외우기")
     private String content;
 
-    @Schema(description = "이미지 url", example = "https://example.com/image2.png")
-    private String image;
+    @Schema(description = "이미지", example = "[https://example.com/image1.png, https://example.com/image2.png]")
+    private List<String> images;
 
     @Schema(description = "챌린지 시작일", example = "2025-09-01")
     private LocalDate startDate;
@@ -41,7 +41,6 @@ public class ChallengeRequest {
         return Challenge.builder()
                 .title(title)
                 .content(content)
-                .image(image)
                 .startDate(startDate)
                 .endDate(endDate)
                 .createdAt(LocalDateTime.now())

@@ -1,11 +1,9 @@
 package ONDA.domain.challenge.service.impl;
 
+import ONDA.domain.challenge.entity.ChallengeImage;
 import ONDA.domain.challenge.dto.ChallengeRequest;
 import ONDA.domain.challenge.dto.ChallengeResponse;
-import ONDA.domain.challenge.entity.Challenge;
-import ONDA.domain.challenge.entity.ChallengeCategory;
-import ONDA.domain.challenge.entity.ProgressStatus;
-import ONDA.domain.challenge.entity.ReviewStatus;
+import ONDA.domain.challenge.entity.*;
 import ONDA.domain.challenge.repository.ChallengeCategoryRepository;
 import ONDA.domain.challenge.repository.ChallengeRepository;
 import ONDA.domain.challenge.service.inf.ChallengeService;
@@ -65,6 +63,12 @@ public class ChallengeServiceImpl implements ChallengeService {
                 .collect(Collectors.toList());
 
         challenge.setCategories(challengeCategories);
+
+        List<ChallengeImage> postImages = dto.getImages().stream()
+                .map(imageUrl -> ChallengeImage.of(challenge, imageUrl))
+                .toList();
+
+        challenge.setImages(postImages);
         challengeRepository.save(challenge);
     }
 
