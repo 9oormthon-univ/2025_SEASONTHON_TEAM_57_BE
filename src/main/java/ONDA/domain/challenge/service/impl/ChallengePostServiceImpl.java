@@ -17,6 +17,7 @@ import ONDA.global.exception.NotFoundMemberException;
 import ONDA.global.response.ApiResponse;
 import ONDA.global.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,11 +56,11 @@ public class ChallengePostServiceImpl implements ChallengePostService {
                         .createDate(LocalDate.now())
                         .build();
 
-        List<ChallengePostImage> postImages = dto.getImages().stream()
-                .map(imageUrl -> ChallengePostImage.of(challengePost, imageUrl))
-                .toList();
-
-        challengePost.setImages(postImages);
+//        List<ChallengePostImage> postImages = dto.getImages().stream()
+//                .map(imageUrl -> ChallengePostImage.of(challengePost, imageUrl))
+//                .toList();
+//
+//        challengePost.setImages(postImages);
         challengePostRepository.save(challengePost);
     }
 
