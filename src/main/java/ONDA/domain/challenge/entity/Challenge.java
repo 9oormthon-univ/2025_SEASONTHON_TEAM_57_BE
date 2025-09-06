@@ -42,11 +42,17 @@ public class Challenge {
 
     private LocalDateTime createdAt;
 
+    private boolean reputationCalculated = false;
+
     @Builder.Default
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChallengePost> challengePosts = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChallengeCategory> categories = new ArrayList<>();
+
+    public void markReputationCalculated() {
+        this.reputationCalculated = true;
+    }
+
 }

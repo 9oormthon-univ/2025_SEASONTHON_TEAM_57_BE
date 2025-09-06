@@ -18,4 +18,5 @@ public interface ChallengePostRepository extends JpaRepository<ChallengePost,Lon
     @Query("SELECT DISTINCT p.author FROM ChallengePost p WHERE p.challenge.id = :challengeId")
     List<Member> findDistinctAuthorsByChallengeId(@Param("challengeId") Long challengeId);
 
+    List<ChallengePost> findByChallenge(Challenge challenge);
 }

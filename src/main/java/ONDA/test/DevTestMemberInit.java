@@ -3,6 +3,7 @@ package ONDA.test;
 import ONDA.domain.challenge.entity.*;
 import ONDA.domain.challenge.repository.ChallengePostRepository;
 import ONDA.domain.challenge.repository.ChallengeRepository;
+import ONDA.domain.challenge.repository.ChallengeVoteRepository;
 import ONDA.domain.member.entity.Gender;
 import ONDA.domain.member.entity.Member;
 import ONDA.domain.member.repository.MemberRepository;
@@ -27,6 +28,7 @@ public class DevTestMemberInit implements CommandLineRunner {
     private final ChallengeRepository challengeRepository;
     private final CategoryRepository categoryRepository;
     private final ChallengePostRepository challengePostRepository;
+    private final ChallengeVoteRepository challengeVoteRepository;
 
     @Override
     public void run(String... args) {
@@ -60,21 +62,23 @@ public class DevTestMemberInit implements CommandLineRunner {
                 LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
 
         Challenge challenge2 = addChallenge("두 번째 챌린지", "매일 20분 명상하기","https://example.com/image2.png",ReviewStatus.APPROVED,
-                ProgressStatus.ONGOING, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
-                LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
+                ProgressStatus.ENDED, LocalDate.of(2025, 8, 20),LocalDate.of(2025, 8, 30),
+                LocalDateTime.of(2025, 8, 19, 12, 0,1), m);
 
         Challenge challenge3 = addChallenge("세 번째 챌린지", "매일 20분 명상하기","https://example.com/image2.png",ReviewStatus.APPROVED,
                 ProgressStatus.NOT_STARTED, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
                 LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
 
-        Challenge challenge4 = addChallenge("두네 번째 챌린지", "매일 20분 명상하기","https://example.com/image2.png",ReviewStatus.APPROVED,
+        Challenge challenge4 = addChallenge("네 번째 챌린지", "매일 20분 명상하기","https://example.com/image2.png",ReviewStatus.APPROVED,
                 ProgressStatus.ENDED, LocalDate.of(2025, 9, 1),LocalDate.of(2025, 9, 8),
                 LocalDateTime.of(2025, 8, 31, 12, 0,1), m);
 
         addChallengePost(m, challenge1, LocalDate.of(2025, 9, 1));
 
-        addChallengePost(m, challenge2, LocalDate.of(2025, 9, 1));
-        addChallengePost(m2, challenge2, LocalDate.of(2025, 9, 1));
+        addChallengePost(m, challenge2, LocalDate.of(2025, 8, 25));
+        addChallengePost(m2, challenge2, LocalDate.of(2025, 8, 25));
+
+        addChallengeVote(challenge2, m, m);
     }
     private Challenge addChallenge(String title, String content, String image,ReviewStatus reviewStatus,
                               ProgressStatus progressStatus, LocalDate startDate, LocalDate endDate,
@@ -121,9 +125,19 @@ public class DevTestMemberInit implements CommandLineRunner {
                 .createDate(createDate)
                 .build();
 
-        ChallengePostImage challengePostImage = ChallengePostImage.of(challengePost,"\"https://example.com/image2.png\"");
+        ChallengePostImage challengePostImage = ChallengePostImage.of(challengePost,"https://example.com/image2.png");
         List<ChallengePostImage> images = List.of(challengePostImage);
         challengePost.setImages(images);
         challengePostRepository.save(challengePost);
+    }
+
+    public void addChallengeVote(Challenge challenge, Member voter, Member participants){
+        ChallengeVote challengeVote = ChallengeVote.builder()
+                .challenge(challenge)
+                .voter(voter)
+                .participant(participants)
+                .votedAt(LocalDateTime.of(2025, 9, 6, 12, 0,1))
+                .build();
+        challengeVoteRepository.save(challengeVote);
     }
 }
