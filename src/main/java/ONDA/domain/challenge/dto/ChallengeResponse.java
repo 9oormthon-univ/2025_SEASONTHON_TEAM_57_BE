@@ -17,6 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChallengeResponse {
+    @Schema(description = "챌린지 ID", example = "1")
+    private Long challengeId;
+
     @Schema(description = "작성자", example = "홍길동")
     private String author;
 
