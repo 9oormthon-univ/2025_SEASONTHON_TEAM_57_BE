@@ -71,9 +71,22 @@ public class MediaService {
                 return uploadChallengeImage(fileName, uploader, referenceId);
             case CHALLENGE_POST_IMAGE:
                 return uploadChallengePostImage(fileName, uploader, referenceId);
+            case PROFILE_IMAGE:
+                return uploadProfileImage(fileName, uploader, referenceId);
             default:
                 throw new BusinessException(ErrorCode.INVALID_IMAGE_USAGE_TYPE);
         }
+    }
+
+    private Object uploadProfileImage(String fileName, Member uploader, Long referenceId) {
+        String s = uploader.changeProfile(getImageUrl(fileName));
+        if (s != null) {
+            //삭제로직
+            String substring = s.substring(backUrl.length() + "/api/media/images/".length());
+
+            deleteFileFromStorage(substring);
+        }
+        return null;
     }
 
     private ChallengePostImage uploadChallengePostImage(String fileName, Member uploader, Long postId) {
@@ -152,21 +165,6 @@ public class MediaService {
         }
     }
 
-    @Transactional
-    public void deleteImage(Long imageId, Member member, ImageUsageType usageType) {
-        log.info("============{}==============", imageId);
-        
-        switch (usageType) {
-            case TALENT_POST_IMAGE, PROFILE_IMAGE:
-                deletePostImage(imageId, member);
-                break;
-            case CHALLENGE_IMAGE:
-                deleteChallengeImage(imageId, member);
-                break;
-            default:
-                throw new BusinessException(ErrorCode.INVALID_IMAGE_USAGE_TYPE);
-        }
-    }
 
     @Transactional
     public void deleteImage(Long imageId, Member member) {
