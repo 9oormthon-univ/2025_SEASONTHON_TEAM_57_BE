@@ -12,6 +12,9 @@ import java.util.List;
 
 public interface TalentPostRepository extends JpaRepository<TalentPost, Long> {
 
+    //전체 조회
+    List<TalentPost> findAllByOrderByCreatedAtDesc();
+
     // 카테고리별
     @Query("SELECT DISTINCT p FROM TalentPost p " +
             "JOIN p.categories pc " +

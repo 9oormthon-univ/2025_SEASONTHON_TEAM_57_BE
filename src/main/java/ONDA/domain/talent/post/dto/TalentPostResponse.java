@@ -44,6 +44,9 @@ public class TalentPostResponse {
     
     @Schema(description = "카테고리 목록")
     private List<CategoryResponse> categories;
+
+    @Schema(description = "가격")
+    private int price;
     
     @Getter
     @Builder
@@ -76,6 +79,7 @@ public class TalentPostResponse {
                                 .type(pc.getType())
                                 .build())
                         .toList())
+                .price(post.getPrice())
                 .build();
     }
 }

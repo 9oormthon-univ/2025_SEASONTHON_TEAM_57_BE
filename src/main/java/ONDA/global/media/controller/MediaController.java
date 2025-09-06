@@ -3,6 +3,7 @@ package ONDA.global.media.controller;
 import ONDA.auth.infra.jwt.TokenClaims;
 import ONDA.domain.member.entity.Member;
 import ONDA.domain.member.service.MemberService;
+import ONDA.domain.talent.post.service.TalentPostService;
 import ONDA.global.exception.BusinessException;
 import ONDA.global.exception.ErrorCode;
 import ONDA.global.media.dto.ImageUploadResponse;
@@ -38,40 +39,65 @@ public class MediaController {
     private final MediaService mediaService;
     private final MemberService memberService;
 
-    @PostMapping("/upload/single")
-    @Operation(summary = "단일 이미지 업로드", description = "하나의 이미지 파일을 업로드합니다.")
-    public ApiResponse<ImageUploadResponse> uploadSingleImage(
-            @Parameter(description = "업로드할 이미지 파일") @RequestParam("file") MultipartFile file,
-            @Parameter(description = "이미지 사용 타입") @RequestParam("usageType") ImageUsageType usageType,
-            @Parameter(description = "참조 엔티티 ID (선택사항)") @RequestParam(value = "referenceId", required = false) Long referenceId,
-            @AuthenticationPrincipal Long memberId) {
+    private final TalentPostService talentPostService;
 
-        Member member = memberService.findById(memberId);
-        UploadedImage uploadedImage = mediaService.uploadImage(file, member, usageType, referenceId);
-        
-        ImageUploadResponse response = ImageUploadResponse.builder()
-                .imageId(uploadedImage.getId())
-                .imageName(uploadedImage.getImageName())
-                .imageUrl(mediaService.getImageUrl(uploadedImage.getImageName()))
-                .usageType(uploadedImage.getUsageType())
-                .uploadedAt(uploadedImage.getUploadedAt())
-                .build();
+//    @PostMapping("/upload/single")
+//    @Operation(summary = "단일 이미지 업로드", description = "하나의 이미지 파일을 업로드합니다.")
+//    public ApiResponse<ImageUploadResponse> uploadSingleImage(
+//            @Parameter(description = "업로드할 이미지 파일") @RequestParam("file") MultipartFile file,
+//            @Parameter(description = "이미지 사용 타입") @RequestParam("usageType") ImageUsageType usageType,
+//            @Parameter(description = "참조 엔티티 ID (선택사항)") @RequestParam(value = "referenceId", required = false) Long referenceId,
+//            @AuthenticationPrincipal Long memberId) {
+//
+//        Member member = memberService.findById(memberId);
+//        UploadedImage uploadedImage = mediaService.uploadImage(file, member, usageType, referenceId);
+//
+//        ImageUploadResponse response = ImageUploadResponse.builder()
+//                .imageId(uploadedImage.getId())
+//                .imageName(uploadedImage.getImageName())
+//                .imageUrl(mediaService.getImageUrl(uploadedImage.getImageName()))
+//                .usageType(uploadedImage.getUsageType())
+//                .uploadedAt(uploadedImage.getUploadedAt())
+//                .build();
+//
+//        return ApiResponse.success(ResponseCode.SUCCESS, response);
+//    }
 
-        return ApiResponse.success(ResponseCode.SUCCESS, response);
-    }
 
-    @PostMapping("/upload/multiple")
+    @PostMapping("/upload")
     @Operation(summary = "다중 이미지 업로드", description = "여러 이미지 파일을 한번에 업로드합니다.")
     public ApiResponse<List<ImageUploadResponse>> uploadMultipleImages(
-            @Parameter(description = "업로드할 이미지 파일들") @RequestParam("files") MultipartFile[] files,
+            @Parameter(description = "업로드할 이미지 파일들 (최대 5개)") @RequestParam("files") MultipartFile[] files,
             @Parameter(description = "이미지 사용 타입") @RequestParam("usageType") ImageUsageType usageType,
-            @Parameter(description = "참조 엔티티 ID (선택사항)") @RequestParam(value = "referenceId", required = false) Long referenceId,
+            @Parameter(description = "참조 엔티티 ID)") @RequestParam(value = "referenceId") Long referenceId,
             @AuthenticationPrincipal Long memberId) {
+
+        //프로필은 1개만 가능
+        if (ImageUsageType.PROFILE_IMAGE == usageType && files.length == 1) {
+            throw new BusinessException(ErrorCode.PROFILE_IMAGE_SINGLE_REQUIRED);
+        }
 
         Member member = memberService.findById(memberId);
         List<MultipartFile> fileList = Arrays.asList(files);
         
         List<UploadedImage> uploadedImages = mediaService.uploadImages(fileList, member, usageType, referenceId);
+
+        switch (usageType) {
+            case PROFILE_IMAGE:
+                memberService.uploadProfile();
+            case TALENT_POST_IMAGE:
+                talentPostService.uploadImages();
+                break;
+            case CHALLENGE_IMAGE:
+                break;
+            case CHALLENGE_POST_IMAGE:
+                break;
+            default:
+                throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+        if (ImageUsageType.TALENT_POST_IMAGE == usageType) {
+        }
+
         List<ImageUploadResponse> responses = uploadedImages.stream()
                 .map(uploadedImage -> ImageUploadResponse.builder()
                         .imageId(uploadedImage.getId())

@@ -1,7 +1,6 @@
 package ONDA.domain.talent.post.controller;
 
 import ONDA.domain.talent.post.dto.TalentPostCreateRequest;
-import ONDA.domain.talent.post.dto.TalentPostListResponse;
 import ONDA.domain.talent.post.dto.TalentPostResponse;
 import ONDA.domain.talent.post.dto.TalentPostUpdateRequest;
 import ONDA.domain.talent.post.service.TalentPostService;
@@ -26,14 +25,22 @@ public class TalentPostController {
 
     private final TalentPostService talentPostService;
 
+    @GetMapping("/all")
+    @Operation(summary = "전체 게시글 조회", description = "전체 게시글들을 조회합니다")
+    public ResponseEntity<ApiResponse<List<TalentPostResponse>>> getAll() {
+        List<TalentPostResponse> response = talentPostService.getAll();
+        return ResponseEntity.ok(ApiResponse.success(ResponseCode.TALENT_POST_READ_SUCCESS,response));
+    }
+
     @PostMapping
     @Operation(summary = "재능공유 게시글 작성", description = "재능 공유 게시글을 작성합니다")
     public ResponseEntity<ApiResponse<TalentPostResponse>> createPost(
             @AuthenticationPrincipal Long memberId,
             @Valid @RequestBody TalentPostCreateRequest request) {
+
         TalentPostResponse response = talentPostService.create(memberId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(ResponseCode.TALENT_POST_CREATE_SUCCESS,response));
+                .body(ApiResponse.success(ResponseCode.TALENT_POST_CREATE_SUCCESS, response));
     }
 
     @GetMapping("/{postId}")
@@ -46,32 +53,32 @@ public class TalentPostController {
 
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "카테고리별 게시글 조회", description = "선택한 카테고리의 게시글들을 조회합니다")
-    public ResponseEntity<ApiResponse<List<TalentPostListResponse>>> getPostByCategory(
+    public ResponseEntity<ApiResponse<List<TalentPostResponse>>> getPostByCategory(
             @PathVariable("categoryId") Long categoryId) {
-        List<TalentPostListResponse> response = talentPostService.getByCategory(categoryId);
+        List<TalentPostResponse> response = talentPostService.getByCategory(categoryId);
         return ResponseEntity.ok(ApiResponse.success(ResponseCode.TALENT_POST_READ_SUCCESS,response));
     }
 
     @GetMapping("/hot")
     @Operation(summary = "Hot한 재능공유 조회", description = "현재 Hot한 재능들을 조회합니다")
-    public ResponseEntity<ApiResponse<List<TalentPostListResponse>>> getHotPost() {
-        List<TalentPostListResponse> response = talentPostService.getHotPost();
+    public ResponseEntity<ApiResponse<List<TalentPostResponse>>> getHotPost() {
+        List<TalentPostResponse> response = talentPostService.getHotPost();
         return ResponseEntity.ok(ApiResponse.success(ResponseCode.TALENT_POST_READ_SUCCESS,response));
     }
 
     @GetMapping("/recommended")
     @Operation(summary = "맞춤 재능공유 추천", description = "사용자에게 알맞는 재능들을 추천합니다")
-    public ResponseEntity<ApiResponse<List<TalentPostListResponse>>> getRecommendedPost(
+    public ResponseEntity<ApiResponse<List<TalentPostResponse>>> getRecommendedPost(
             @AuthenticationPrincipal Long memberId) {
-        List<TalentPostListResponse> response = talentPostService.getRecommended(memberId);
+        List<TalentPostResponse> response = talentPostService.getRecommended(memberId);
         return ResponseEntity.ok(ApiResponse.success(ResponseCode.TALENT_POST_READ_SUCCESS,response));
     }
 
     @GetMapping("/my")
     @Operation(summary = "내가 작성한 게시글 조회", description = "내가 작성한 재능공유 게시글들을 조회합니다")
-    public ResponseEntity<ApiResponse<List<TalentPostListResponse>>> getMyPosts(
+    public ResponseEntity<ApiResponse<List<TalentPostResponse>>> getMyPosts(
             @AuthenticationPrincipal Long memberId) {
-        List<TalentPostListResponse> response = talentPostService.getMyPosts(memberId);
+        List<TalentPostResponse> response = talentPostService.getMyPosts(memberId);
         return ResponseEntity.ok(ApiResponse.success(ResponseCode.TALENT_POST_READ_SUCCESS,response));
     }
 
