@@ -9,6 +9,7 @@ import ONDA.domain.member.entity.Member;
 import ONDA.domain.member.repository.MemberRepository;
 import ONDA.global.category.Category;
 import ONDA.global.category.CategoryRepository;
+import ONDA.global.media.entity.ChallengeImage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -95,9 +96,9 @@ public class DevTestMemberInit implements CommandLineRunner {
                 .author(author)
                 .build();
 
-        ChallengeImage challengeImage = ChallengeImage.of(challenge,"https://example.com/image2.png");
-        List<ChallengeImage> images = List.of(challengeImage);
-        challenge.setImages(images);
+//        ChallengeImage challengeImage = ChallengeImage.of(challenge,"https://example.com/image2.png");
+//        List<ChallengeImage> images = List.of(challengeImage);
+//        challenge.setImages(images);
 
 
         Category category1 = categoryRepository.findById(1L)

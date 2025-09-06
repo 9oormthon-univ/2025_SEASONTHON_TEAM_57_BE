@@ -1,6 +1,5 @@
 package ONDA.domain.challenge.service.impl;
 
-import ONDA.domain.challenge.entity.ChallengeImage;
 import ONDA.domain.challenge.dto.ChallengeRequest;
 import ONDA.domain.challenge.dto.ChallengeResponse;
 import ONDA.domain.challenge.entity.*;
@@ -15,6 +14,7 @@ import ONDA.global.category.CategoryRepository;
 import ONDA.global.exception.BusinessException;
 import ONDA.global.exception.ErrorCode;
 import ONDA.global.exception.NotFoundMemberException;
+import ONDA.global.media.entity.ChallengeImage;
 import ONDA.global.response.ApiResponse;
 import ONDA.global.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -64,11 +64,11 @@ public class ChallengeServiceImpl implements ChallengeService {
 
         challenge.setCategories(challengeCategories);
 
-        List<ChallengeImage> postImages = dto.getImages().stream()
-                .map(imageUrl -> ChallengeImage.of(challenge, imageUrl))
-                .toList();
+//        List<ChallengeImage> postImages = dto.getImages().stream()
+//                .map(imageUrl -> ChallengeImage.of(challenge, imageUrl))
+//                .toList();
 
-        challenge.setImages(postImages);
+        //challenge.setImages(postImages);
         challengeRepository.save(challenge);
     }
 

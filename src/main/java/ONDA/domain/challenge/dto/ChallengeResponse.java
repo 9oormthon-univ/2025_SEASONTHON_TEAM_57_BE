@@ -6,6 +6,7 @@ import ONDA.domain.talent.post.dto.TalentPostResponse;
 import ONDA.domain.talent.post.entity.TalentPost;
 import ONDA.global.media.dto.ImageUploadResponse;
 
+import ONDA.global.media.entity.ChallengeImage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -71,10 +72,10 @@ public class ChallengeResponse {
         this.endDate = challenge.getEndDate();
         this.createdAt = challenge.getCreatedAt();
 
-        List<ChallengeImage> postImages = challenge.getImages();
-        for(ChallengeImage challengeImage : postImages){
-            images.add(challengeImage.getUrl());
-        }
+//        List<ChallengeImage> postImages = challenge.getImages();
+//        for(ChallengeImage challengeImage : postImages){
+//            images.add(challengeImage.getUrl());
+        //}
 
         List<ChallengeCategory> categories = challenge.getCategories();
         for(ChallengeCategory challengeCategory : categories){
