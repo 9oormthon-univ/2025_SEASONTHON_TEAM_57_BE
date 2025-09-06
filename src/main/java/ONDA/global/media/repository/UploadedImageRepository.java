@@ -1,5 +1,6 @@
 package ONDA.global.media.repository;
 
+import ONDA.domain.talent.post.entity.TalentPost;
 import ONDA.global.media.entity.ImageUsageType;
 import ONDA.global.media.entity.UploadedImage;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,6 +2,7 @@ package ONDA.global.media.entity;
 
 
 import ONDA.domain.member.entity.Member;
+import ONDA.domain.talent.post.entity.TalentPost;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,7 +21,7 @@ public class UploadedImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String imageName; // UUID.확장자 (abc123-def456.jpg)
+    private String imageUrl; // UUID.확장자 (abc123-def456.jpg)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uploader_id")
@@ -35,9 +36,13 @@ public class UploadedImage {
     @CreationTimestamp
     private LocalDateTime uploadedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TalentPost post;
+
+
     @Builder
-    private UploadedImage(String imageName, Member uploader, ImageUsageType usageType, Long referenceId) {
-        this.imageName = imageName;
+    private UploadedImage(String imageUrl, Member uploader, ImageUsageType usageType, Long referenceId) {
+        this.imageUrl = imageUrl;
         this.uploader = uploader;
         this.usageType = usageType;
         this.referenceId = referenceId;
