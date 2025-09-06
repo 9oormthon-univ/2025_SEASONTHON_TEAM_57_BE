@@ -72,6 +72,8 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/api/profile/**").authenticated()
 
+                        .requestMatchers(HttpMethod.GET, "/api/notifications/**").authenticated()
+
                         .requestMatchers(HttpMethod.GET, "/api/challenges/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/talent-posts/**").permitAll()
 
