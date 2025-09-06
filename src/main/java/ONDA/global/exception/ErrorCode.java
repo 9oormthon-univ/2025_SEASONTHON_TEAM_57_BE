@@ -46,7 +46,7 @@ public enum ErrorCode {
     IMAGE_NOT_FOUND("FILE006", "이미지를 찾을 수 없습니다"),
     IMAGE_READ_FAILED("FILE007", "이미지 읽기에 실패했습니다"),
     TOO_MANY_FILES("FILE008", "업로드 가능한 파일 수를 초과했습니다 (최대 5개)"),
-    FORBIDDEN("FILE009", "권한이 없습니다");
+    FORBIDDEN("FILE009", "권한이 없습니다"),
 
     NOT_REPUTATION_FOUND("REPUTATION-404", "명성을 찾을 수 없습니다."),
     NOT_CATEGORY_FOUND("CATEGORY-404", "카테고리를 찾을 수 없습니다.");
